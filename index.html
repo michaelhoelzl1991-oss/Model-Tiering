@@ -1,0 +1,877 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="description" content="Tier bank AI use cases on Impact, Complexity and Reliance under the MAS Guidelines on AI Risk Management.">
+<title>AI Use Case Tiering</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,300;0,6..72,400;0,6..72,500;1,6..72,400&family=Hanken+Grotesk:wght@400;500;600&display=swap">
+<style>
+/* Layout: geological strata. Tiers are rock layers drawn with one hatch vocabulary (dense, diagonal, dots).
+   Hairline rules instead of cards, square corners, serif for statements, grotesk for the working parts. */
+:root{
+  --bg:#EEF1F2; --surface:#F7F8F8; --ink:#1E262D; --muted:#56636C; --rule:#CDD4D8;
+  --slate:#2E3A44; --shale:#1F2830; --on-slate:#EEF1F2; --on-slate-muted:#A7B0B5;
+  --silver:#B9C0C4; --sage:#7E9888; --copper:#9C5B32; --focus:#2F6F8F;
+  --t1:#9C5B32; --t2:#4E5E6A; --t3:#6F8A79; --tbg:#9BA5AB;
+  --serif:"Newsreader",Georgia,"Times New Roman",serif;
+  --sans:"Hanken Grotesk","Helvetica Neue",Arial,sans-serif;
+  --max:1180px;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#161D23; --surface:#1C252C; --ink:#E4E8EA; --muted:#9AA6AD; --rule:#2F3B44;
+  --slate:#0F151A; --shale:#0B1014; --on-slate:#E4E8EA; --on-slate-muted:#8E9AA1;
+  --silver:#8C979E; --sage:#8FA898; --copper:#C07A4E; --focus:#7FB6D1;
+  --t1:#C9824F; --t2:#A3B1BA; --t3:#8FA898; --tbg:#6E7A81; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#161D23; --surface:#1C252C; --ink:#E4E8EA; --muted:#9AA6AD; --rule:#2F3B44;
+  --slate:#0F151A; --shale:#0B1014; --on-slate:#E4E8EA; --on-slate-muted:#8E9AA1;
+  --silver:#8C979E; --sage:#8FA898; --copper:#C07A4E; --focus:#7FB6D1;
+  --t1:#C9824F; --t2:#A3B1BA; --t3:#8FA898; --tbg:#6E7A81; color-scheme:dark}
+
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font-family:var(--sans);font-size:16px;line-height:1.55;-webkit-font-smoothing:antialiased}
+a{color:inherit}
+:focus-visible{outline:2px solid var(--focus);outline-offset:3px}
+.wrap{max-width:var(--max);margin:0 auto;padding-left:max(24px,env(safe-area-inset-left,0px));padding-right:max(24px,env(safe-area-inset-right,0px))}
+@media (max-width:600px){.wrap{padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}}
+h1,h2,h3{font-family:var(--serif);font-weight:400;letter-spacing:-.01em;margin:0;text-wrap:balance}
+h2{font-size:clamp(26px,3.2vw,36px);line-height:1.12}
+h3{font-size:21px;line-height:1.25}
+p{margin:0}
+.muted{color:var(--muted)}
+.small{font-size:14px}
+.num{font-variant-numeric:tabular-nums}
+.ref{font-size:12.5px;color:var(--muted);white-space:nowrap;border-bottom:1px dotted var(--silver);margin-left:2px}
+.eyebrow{font-size:13px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+
+/* hatch vocabulary: one per tier, so tiers never rely on colour alone */
+.hx-1{background-image:repeating-linear-gradient(45deg,var(--t1) 0 1.6px,transparent 1.6px 6px),repeating-linear-gradient(-45deg,var(--t1) 0 1.6px,transparent 1.6px 6px)}
+.hx-2{background-image:repeating-linear-gradient(45deg,var(--t2) 0 1.5px,transparent 1.5px 7px)}
+.hx-3{background-image:radial-gradient(var(--t3) 1.3px,transparent 1.5px);background-size:9px 9px}
+.hx-BG{background-image:radial-gradient(var(--tbg) 1px,transparent 1.2px);background-size:14px 14px}
+.hx-OOS{background:transparent}
+.sw{display:inline-block;width:14px;height:14px;border:1px solid var(--rule);vertical-align:-2px;flex:none}
+
+/* header */
+.top{position:sticky;top:0;z-index:20;padding-top:env(safe-area-inset-top,0px);background:color-mix(in srgb,var(--bg) 92%,transparent);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);border-bottom:1px solid var(--rule)}
+.top .wrap{display:flex;align-items:center;justify-content:space-between;gap:20px;height:64px}
+.mark{font-family:var(--serif);font-size:21px;display:flex;align-items:center;gap:12px;white-space:nowrap}
+.mark i{display:block;width:9px;height:24px}
+.tabs{display:flex;gap:28px;height:100%}
+.tab{appearance:none;background:none;border:0;border-bottom:2px solid transparent;padding:0;height:100%;font:500 15px var(--sans);color:var(--muted);cursor:pointer;white-space:nowrap}
+.tab:hover{color:var(--ink)}
+.tab[aria-selected="true"]{color:var(--ink);border-bottom-color:var(--ink)}
+@media (max-width:640px){.mark span{display:none}.tabs{gap:20px}.top .wrap{height:56px}}
+
+/* hero */
+.hero{padding-block:56px 44px;display:grid;grid-template-columns:minmax(0,8fr) minmax(0,4fr);gap:56px;align-items:end}
+.hero h1{font-size:clamp(34px,4.6vw,58px);line-height:1.05;font-weight:300;max-width:22ch;margin-top:14px}
+@media (max-width:640px){.presets-h{flex-direction:column;align-items:flex-start;gap:2px}}
+.hero .lede{font-family:var(--serif);font-size:clamp(18px,1.8vw,20px);line-height:1.55;color:var(--muted);max-width:50ch}
+@media (max-width:860px){.hero{grid-template-columns:1fr;gap:20px;padding-block:40px 32px}}
+
+section.pane{padding-bottom:88px}
+
+/* assess layout */
+.assess{display:grid;grid-template-columns:minmax(0,7fr) minmax(0,5fr);gap:0;border:1px solid var(--rule);background:var(--surface)}
+.form{padding:32px 36px;border-right:1px solid var(--rule);min-width:0}
+.verdict-col{min-width:0}
+.verdict{position:sticky;top:calc(64px + env(safe-area-inset-top,0px));padding:32px 32px 28px}
+@media (max-width:900px){.assess{grid-template-columns:1fr}.form{border-right:0;border-bottom:1px solid var(--rule);padding:24px 20px}.verdict{position:static;padding:24px 20px}}
+
+.presets-h{display:flex;justify-content:space-between;align-items:baseline;gap:12px;margin-bottom:14px}
+.presets{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:0;border-top:1px solid var(--ink);border-left:1px solid var(--rule)}
+.preset{appearance:none;text-align:left;font:inherit;background:transparent;color:var(--ink);border:0;border-right:1px solid var(--rule);border-bottom:1px solid var(--rule);padding:12px 14px;cursor:pointer;display:flex;flex-direction:column;gap:3px;min-width:0}
+.preset:hover{background:var(--bg)}
+.preset b{font-weight:500;font-size:14.5px;line-height:1.3}
+.preset span{font-size:13px;color:var(--muted);line-height:1.35}
+.preset[aria-pressed="true"]{background:var(--ink);color:var(--bg)}
+.preset[aria-pressed="true"] span{color:color-mix(in srgb,var(--bg) 72%,transparent)}
+@media (max-width:640px){.presets{grid-template-columns:repeat(2,minmax(0,1fr))}}
+
+.q{padding-block:26px;border-top:1px solid var(--rule);display:flex;flex-direction:column;gap:12px}
+.q.first{margin-top:28px}
+.q-h{display:grid;grid-template-columns:28px minmax(0,1fr) auto;gap:6px 10px;align-items:baseline}
+.q-h .n{font-family:var(--serif);font-size:15px;color:var(--muted)}
+.q-h h3{font-size:20px}
+.q-h .dim{font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);white-space:nowrap}
+.q-body{padding-left:38px;display:flex;flex-direction:column;gap:12px}
+@media (max-width:600px){.q-body{padding-left:0}.q-h{grid-template-columns:22px minmax(0,1fr) auto}}
+
+.name-in{width:100%;font:inherit;font-size:16px;color:var(--ink);background:transparent;border:0;border-bottom:1px solid var(--rule);padding:8px 0}
+.name-in:focus{outline:none;border-bottom-color:var(--ink)}
+
+/* technique tiles */
+.tiles{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:0;border-top:1px solid var(--rule);border-left:1px solid var(--rule)}
+.tile{position:relative;display:flex;flex-direction:column;gap:2px;padding:11px 14px;border-right:1px solid var(--rule);border-bottom:1px solid var(--rule);cursor:pointer;min-width:0}
+.tile input{position:absolute;opacity:0;pointer-events:none}
+.tile b{font-weight:500;font-size:14.5px;line-height:1.3}
+.tile span{font-size:13px;color:var(--muted);line-height:1.35}
+.tile em{font-style:normal;font-size:12px;color:var(--muted);position:absolute;top:11px;right:12px}
+.tile:hover{background:var(--bg)}
+.tile.on{background:var(--ink);color:var(--bg)}
+.tile.on span,.tile.on em{color:color-mix(in srgb,var(--bg) 72%,transparent)}
+.tile:focus-within{outline:2px solid var(--focus);outline-offset:-2px}
+.tile b{padding-right:28px}
+@media (max-width:520px){.tiles{grid-template-columns:1fr}}
+
+/* 1 to 5 scale */
+.scale{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:0;border:1px solid var(--rule);border-right:0}
+.scale label{position:relative;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;min-height:52px;padding:6px 4px;border-right:1px solid var(--rule);cursor:pointer;text-align:center}
+.scale input{position:absolute;opacity:0;pointer-events:none}
+.scale .v{font-family:var(--serif);font-size:20px;line-height:1}
+.scale .s{font-size:12px;color:var(--muted);line-height:1.2}
+.scale label:hover{background:var(--bg)}
+.scale label.on{background:var(--ink);color:var(--bg)}
+.scale label.on .s{color:color-mix(in srgb,var(--bg) 72%,transparent)}
+.scale label:focus-within{outline:2px solid var(--focus);outline-offset:-2px}
+.scale-desc{min-height:44px;font-size:14.5px}
+.scale-desc b{font-weight:500}
+.scale-desc span{display:block;color:var(--muted);font-size:13.5px}
+
+/* switches */
+.switches{display:flex;flex-direction:column;gap:10px}
+.sw-row{display:grid;grid-template-columns:38px minmax(0,1fr);gap:12px;align-items:start;cursor:pointer}
+.sw-row input{position:absolute;opacity:0;pointer-events:none}
+.toggle{width:38px;height:22px;border:1px solid var(--muted);position:relative;margin-top:1px;transition:background .2s}
+.toggle::after{content:"";position:absolute;top:3px;left:3px;width:14px;height:14px;background:var(--muted);transition:transform .2s,background .2s}
+.sw-row input:checked+.toggle{background:var(--ink);border-color:var(--ink)}
+.sw-row input:checked+.toggle::after{transform:translateX(16px);background:var(--bg)}
+.sw-row input:focus-visible+.toggle{outline:2px solid var(--focus);outline-offset:2px}
+.sw-row b{font-weight:500;font-size:14.5px;display:block}
+.sw-row small{font-size:13px;color:var(--muted)}
+
+/* info */
+.i{appearance:none;width:22px;height:22px;border-radius:50%;border:1px solid var(--rule);background:transparent;color:var(--muted);font:italic 500 13px/1 var(--serif);cursor:pointer;display:inline-grid;place-items:center;padding:0;flex:none}
+.i:hover{color:var(--ink);border-color:var(--muted)}
+.i[aria-expanded="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.note{border-top:1px solid var(--ink);background:var(--bg);padding:12px 14px;font-size:14px;line-height:1.55;max-width:70ch}
+.note .lbl{font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);display:block;margin-bottom:4px}
+
+/* verdict */
+.v-top{display:flex;justify-content:space-between;align-items:baseline;gap:12px}
+.v-tier{font-family:var(--serif);font-size:clamp(40px,4.4vw,54px);line-height:1;font-weight:400;margin:8px 0 4px}
+.v-score{font-size:14px;color:var(--muted)}
+.v-score b{font-family:var(--serif);font-size:22px;font-weight:400;color:var(--ink)}
+.core{margin-top:22px;border:1px solid var(--rule);display:flex;flex-direction:column}
+.stratum{display:grid;grid-template-columns:56px minmax(0,1fr) auto;align-items:center;border-bottom:1px solid var(--rule);min-height:38px;transition:opacity .25s}
+.stratum:last-child{border-bottom:0}
+.stratum .rock{align-self:stretch;border-right:1px solid var(--rule)}
+.stratum .nm{padding:7px 12px;font-size:14px}
+.stratum .ds{padding:7px 12px;font-size:12.5px;color:var(--muted);text-align:right}
+.stratum.dim{opacity:.38}
+.stratum.on{outline:2px solid var(--ink);outline-offset:-1px;opacity:1}
+.stratum.on .nm{font-weight:600}
+.meters{display:grid;grid-template-columns:auto minmax(0,1fr) 18px;gap:8px 14px;align-items:center;margin-top:22px;font-size:14px}
+.meter{display:grid;grid-template-columns:repeat(5,1fr);gap:3px}
+.meter span{height:8px;background:var(--rule)}
+.meter span.f{background:var(--ink)}
+.v-sec{margin-top:24px;padding-top:16px;border-top:1px solid var(--rule)}
+.v-sec-h{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:8px}
+.v-sec-h h4{margin:0;font:500 13px var(--sans);letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+.steps{list-style:none;margin:0;padding:0}
+.steps li{display:grid;grid-template-columns:18px minmax(0,1fr);gap:10px;padding:7px 0;font-size:14px;border-bottom:1px solid var(--rule)}
+.steps li:last-child{border-bottom:0}
+.steps .k{font-family:var(--serif);color:var(--muted)}
+.steps b{font-weight:500}
+.steps .hit{color:var(--copper);font-weight:600}
+.req{list-style:none;margin:0;padding:0;font-size:14px}
+.req li{padding:5px 0 5px 16px;position:relative}
+.req li::before{content:"";position:absolute;left:0;top:13px;width:7px;height:1px;background:var(--ink)}
+.resid{display:grid;grid-template-columns:40px minmax(0,1fr);gap:14px;align-items:stretch}
+.resid .rock{border:1px solid var(--rule);min-height:44px}
+.resid p{font-size:14px}
+.btn{appearance:none;display:inline-block;padding:13px 20px;font:500 15px var(--sans);text-decoration:none;border:1px solid var(--ink);background:transparent;color:var(--ink);cursor:pointer}
+.btn:hover{background:var(--ink);color:var(--bg)}
+.btn-solid{background:var(--slate);border-color:var(--slate);color:var(--on-slate)}
+.btn-solid:hover{background:var(--shale);border-color:var(--shale);color:var(--on-slate)}
+.btn-sm{padding:5px 10px;font-size:13px}
+.add-row{display:flex;gap:14px;align-items:center;flex-wrap:wrap;margin-top:24px}
+.add-row a{font-size:14px}
+
+/* mobile tier bar */
+.tierbar{position:fixed;left:0;right:0;bottom:0;z-index:30;background:var(--slate);color:var(--on-slate);padding:10px max(16px,env(safe-area-inset-right,0px)) calc(10px + env(safe-area-inset-bottom,0px)) max(16px,env(safe-area-inset-left,0px));display:flex;align-items:center;gap:12px;transform:translateY(110%);transition:transform .25s}
+.tierbar.show{transform:none}
+.tierbar .rock{width:28px;height:28px;border:1px solid color-mix(in srgb,var(--on-slate) 30%,transparent);flex:none}
+.tierbar b{font-family:var(--serif);font-weight:400;font-size:20px}
+.tierbar span{font-size:13px;color:var(--on-slate-muted)}
+.tierbar button{margin-left:auto;appearance:none;background:transparent;border:1px solid var(--on-slate);color:var(--on-slate);font:500 14px var(--sans);padding:7px 12px;cursor:pointer}
+@media (min-width:901px){.tierbar{display:none}}
+
+/* portfolio */
+.pf-head{display:flex;justify-content:space-between;align-items:end;gap:20px;flex-wrap:wrap;margin-bottom:28px}
+.pf-head p{margin-top:8px;max-width:60ch}
+.kpis{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));border-top:1px solid var(--ink);border-bottom:1px solid var(--rule)}
+.kpi{padding:18px 20px 20px 0;display:flex;flex-direction:column;gap:6px;border-right:1px solid var(--rule);margin-right:20px}
+.kpi:last-child{border-right:0;margin-right:0}
+.kpi .v{font-family:var(--serif);font-size:44px;line-height:1;font-variant-numeric:tabular-nums lining-nums}
+.kpi .l{font-size:14px;color:var(--muted)}
+.kpi.alert .v{color:var(--copper)}
+@media (max-width:820px){.kpis{grid-template-columns:repeat(2,minmax(0,1fr))}.kpi:nth-child(2){border-right:0;margin-right:0}.kpi:nth-child(-n+2){border-bottom:1px solid var(--rule)}.kpi:nth-child(n+3){padding-left:0}}
+
+.row2{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:0;border:1px solid var(--rule);background:var(--surface);margin-top:28px}
+.row2>.blk{padding:26px 28px;min-width:0}
+.row2>.blk:first-child{border-right:1px solid var(--rule)}
+@media (max-width:900px){.row2{grid-template-columns:1fr}.row2>.blk:first-child{border-right:0;border-bottom:1px solid var(--rule)}.row2>.blk{padding:22px 18px}}
+.blk-h{display:flex;justify-content:space-between;align-items:baseline;gap:12px;margin-bottom:18px}
+.blk-h h3{font-size:22px}
+
+/* strata column */
+.column{display:grid;grid-template-columns:minmax(0,1fr);border:1px solid var(--rule)}
+.layer{display:grid;grid-template-columns:64px minmax(0,1fr) auto;border-bottom:1px solid var(--rule);transition:min-height .4s ease}
+.layer:last-child{border-bottom:0}
+.layer .rock{border-right:1px solid var(--rule)}
+.layer .txt{padding:10px 14px;display:flex;flex-direction:column;justify-content:center}
+.layer .txt b{font-family:var(--serif);font-weight:400;font-size:24px;line-height:1.1}
+.layer .txt span{font-size:13.5px;color:var(--muted)}
+.layer .exp{padding:10px 14px;font-size:13px;color:var(--muted);text-align:right;display:flex;align-items:center;justify-content:flex-end}
+.layer .exp.out{color:var(--copper);font-weight:500}
+
+/* coverage */
+.cov{display:flex;flex-direction:column;gap:18px}
+.cov-r{display:grid;grid-template-columns:84px minmax(0,1fr) 92px;gap:14px;align-items:center;font-size:14px}
+.cov-t{position:relative;height:22px;border:1px solid var(--rule)}
+.cov-f{position:absolute;top:0;bottom:0;left:0;border-right:1px solid var(--ink);transition:width .4s ease}
+.cov-m{position:absolute;top:-6px;bottom:-6px;right:-1px;width:2px;background:var(--copper)}
+.cov-v{text-align:right;font-variant-numeric:tabular-nums}
+.legend{display:flex;gap:18px;flex-wrap:wrap;font-size:13px;color:var(--muted);margin-top:16px;align-items:center}
+.legend .lg{display:inline-flex;gap:7px;align-items:center}
+.lg-m{display:inline-block;width:2px;height:14px;background:var(--copper)}
+
+/* map */
+.mapwrap{overflow-x:auto}
+.map{display:grid;grid-template-columns:70px repeat(5,minmax(48px,1fr));gap:0;min-width:340px;border-top:1px solid var(--rule);border-left:1px solid var(--rule)}
+.map .ax{font-size:12.5px;color:var(--muted);display:flex;align-items:center;padding:0 8px;border-right:1px solid var(--rule);border-bottom:1px solid var(--rule)}
+.map .axc{justify-content:center}
+.map .corner{border-right:1px solid var(--rule);border-bottom:1px solid var(--rule)}
+.cell{min-height:56px;padding:6px;display:flex;flex-wrap:wrap;gap:4px;align-content:flex-start;border-right:1px solid var(--rule);border-bottom:1px solid var(--rule)}
+.cell.cap{background-image:repeating-linear-gradient(45deg,color-mix(in srgb,var(--silver) 45%,transparent) 0 1px,transparent 1px 8px)}
+.dot{display:inline-block;border-radius:50%}
+.d-1{background:var(--t1)} .d-2{background:var(--t2)} .d-3{background:var(--t3)} .d-BG{background:var(--tbg)}
+.dot.mine{box-shadow:0 0 0 2px var(--surface),0 0 0 3px var(--ink)}
+
+/* histogram */
+svg.hist text{fill:var(--muted);font-family:var(--sans);font-size:11.5px}
+svg.hist .gl{stroke:var(--rule);stroke-width:1}
+svg.hist .zl{stroke:var(--muted);stroke-dasharray:2 4;stroke-width:1}
+svg.hist .base{stroke:var(--ink);stroke-width:1}
+
+/* table */
+.inv{margin-top:56px}
+.inv-h{display:flex;justify-content:space-between;align-items:end;gap:16px;flex-wrap:wrap;margin-bottom:16px}
+.filters{display:flex;gap:0;border:1px solid var(--rule);border-right:0;flex-wrap:wrap}
+.fbtn{appearance:none;font:500 13.5px var(--sans);border:0;border-right:1px solid var(--rule);background:transparent;color:var(--muted);padding:7px 12px;cursor:pointer}
+.fbtn:hover{color:var(--ink)}
+.fbtn[aria-pressed="true"]{background:var(--ink);color:var(--bg)}
+.tablewrap{overflow-x:auto;border-top:1px solid var(--ink)}
+table{border-collapse:collapse;width:100%;min-width:820px;font-size:14.5px}
+th{font:500 12px var(--sans);letter-spacing:.06em;text-transform:uppercase;color:var(--muted);text-align:left;padding:12px 10px;border-bottom:1px solid var(--rule);white-space:nowrap}
+td{padding:11px 10px;border-bottom:1px solid var(--rule);vertical-align:middle}
+td.n,th.n{text-align:right;font-variant-numeric:tabular-nums}
+.tierc{display:inline-flex;gap:8px;align-items:center;white-space:nowrap}
+.st{white-space:nowrap;font-size:14px}
+.st.over{color:var(--copper)}
+.st.never{color:var(--copper);font-weight:500}
+.st.na{color:var(--muted)}
+.tag{font-size:12px;color:var(--muted);border:1px solid var(--rule);padding:0 5px;margin-left:8px;white-space:nowrap}
+.tag.fat{border-color:var(--copper);color:var(--copper)}
+.empty{padding:36px;text-align:center;color:var(--muted)}
+
+details.assump{margin-top:40px;border-top:1px solid var(--ink)}
+details.assump summary{cursor:pointer;list-style:none;display:flex;justify-content:space-between;align-items:center;padding:18px 0;font-family:var(--serif);font-size:22px}
+details.assump summary::-webkit-details-marker{display:none}
+details.assump summary::after{content:"+";font-family:var(--sans);font-size:22px;color:var(--muted)}
+details.assump[open] summary::after{content:"\2212"}
+.as-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:40px;padding-bottom:24px}
+@media (max-width:760px){.as-grid{grid-template-columns:1fr;gap:24px}}
+.as-grid h4{margin:0 0 10px;font:500 13px var(--sans);letter-spacing:.06em;text-transform:uppercase;color:var(--muted);display:flex;gap:10px;align-items:center}
+.as-grid label{display:flex;justify-content:space-between;align-items:center;gap:14px;padding:9px 0;border-bottom:1px solid var(--rule);font-size:15px}
+.as-grid input{width:76px;font:inherit;text-align:right;color:var(--ink);background:transparent;border:1px solid var(--rule);padding:5px 8px;font-variant-numeric:tabular-nums}
+.chk{display:inline-flex;gap:10px;align-items:center;font-size:14.5px;cursor:pointer}
+
+/* method */
+.method{border-top:1px solid var(--ink)}
+.m-row{display:grid;grid-template-columns:minmax(0,4fr) minmax(0,7fr);gap:48px;padding:36px 0;border-bottom:1px solid var(--rule)}
+.m-row .n{font-family:var(--serif);font-size:15px;color:var(--muted);display:block;margin-bottom:10px}
+.m-row h3{font-size:26px}
+.m-row p{max-width:62ch}
+.m-row p+p,.m-row p+ul,.m-row ul+p{margin-top:12px}
+.m-row ul{list-style:none;margin:0;padding:0}
+.m-row li{padding:8px 0 8px 16px;border-bottom:1px solid var(--rule);position:relative;max-width:62ch}
+.m-row li::before{content:"";position:absolute;left:0;top:19px;width:7px;height:1px;background:var(--ink)}
+@media (max-width:860px){.m-row{grid-template-columns:1fr;gap:14px;padding:26px 0}}
+.formula{font-family:var(--serif);font-size:20px;padding:16px 0;border-top:1px solid var(--rule);border-bottom:1px solid var(--rule);margin:14px 0}
+.formula span{display:block;font-family:var(--sans);font-size:14px;color:var(--muted);margin-top:6px}
+.mtwrap{overflow-x:auto;margin-top:16px}
+.mtab{border-collapse:collapse;font-size:13px;min-width:0}
+.mtab th,.mtab td{border:1px solid var(--rule);padding:0;text-align:center;width:52px;height:38px}
+.mtab th{font:500 12px var(--sans);color:var(--muted);letter-spacing:0;text-transform:none;padding:4px 6px}
+.mtab td span{display:grid;place-items:center;width:100%;height:100%;font-weight:600;font-size:12px}
+.mtab td span b{background:var(--surface);padding:0 4px;font-weight:600}
+
+footer{border-top:1px solid var(--rule);padding-block:28px calc(28px + env(safe-area-inset-bottom,0px));font-size:13.5px;color:var(--muted)}
+footer p{max-width:90ch}
+
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+</style>
+
+<style>body{margin:0}[hidden]{display:none!important}:root{padding-top:env(safe-area-inset-top);padding-bottom:env(safe-area-inset-bottom)}</style>
+</head>
+<body>
+<header class="top">
+  <div class="wrap">
+    <div class="mark"><i class="hx-1" aria-hidden="true"></i><span>AI Use Case Tiering</span></div>
+    <nav class="tabs" role="tablist" aria-label="Sections">
+      <button class="tab" role="tab" id="tab-assess" aria-controls="p-assess" aria-selected="true">Assess</button>
+      <button class="tab" role="tab" id="tab-portfolio" aria-controls="p-portfolio" aria-selected="false" tabindex="-1">Portfolio</button>
+      <button class="tab" role="tab" id="tab-method" aria-controls="p-method" aria-selected="false" tabindex="-1">Method</button>
+    </nav>
+  </div>
+</header>
+
+<main class="wrap">
+  <div class="hero">
+    <div>
+      <span class="eyebrow">MAS Guidelines on AI Risk Management · 7 October 2026</span>
+      <h1>Every AI use case, placed on the three dimensions MAS names.</h1>
+    </div>
+    <p class="lede">Rate a use case on Impact, Complexity and Reliance, see which tier it lands in and why, and watch what that means for validation across a whole inventory.</p>
+  </div>
+
+  <!-- ASSESS -->
+  <section class="pane" id="p-assess" role="tabpanel" aria-labelledby="tab-assess">
+    <div class="assess">
+      <div class="form">
+        <div class="presets-h"><h3>Start from an example</h3><span class="small muted">Each one shows a rule</span></div>
+        <div class="presets" id="examples" role="group" aria-label="Example use cases"></div>
+
+        <div class="q first">
+          <div class="q-h"><span class="n">1</span><h3>Name the use case</h3><span></span></div>
+          <div class="q-body"><label class="eyebrow" for="f-name" style="position:absolute;left:-9999px">Use case name</label><input class="name-in" id="f-name" type="text" maxlength="80" placeholder="e.g. Mortgage pre-approval assistant"></div>
+        </div>
+
+        <div class="q">
+          <div class="q-h"><span class="n">2</span><h3>How does it produce its output?</h3><button class="i" data-info="tech" aria-expanded="false" aria-label="About this question">i</button></div>
+          <div class="q-body">
+            <div class="tiles" id="o-tech" role="radiogroup" aria-label="Technique"></div>
+            <div class="switches">
+              <label class="sw-row" for="f-tp"><input type="checkbox" id="f-tp"><span class="toggle" aria-hidden="true"></span><span><b>Third-party model with limited visibility</b><small>The vendor does not disclose design or training data in usable detail. Adds one point of Complexity.</small></span></label>
+              <label class="sw-row" for="f-dyn"><input type="checkbox" id="f-dyn"><span class="toggle" aria-hidden="true"></span><span><b>Updates itself automatically</b><small>Retrains in production. Tightens monitoring, does not change the tier.</small></span></label>
+            </div>
+          </div>
+        </div>
+
+        <div class="q">
+          <div class="q-h"><span class="n">3</span><h3>Worst plausible financial loss</h3><span class="dim">Impact</span></div>
+          <div class="q-body">
+            <div class="scale" id="o-fin" role="radiogroup" aria-label="Worst plausible financial loss in SGD"></div>
+            <div class="row-i" style="display:flex;gap:10px;align-items:center"><button class="i" data-info="fin" aria-expanded="false" aria-label="About financial impact">i</button><span class="small muted">Amounts in SGD, scaled for a mid-sized bank</span></div>
+          </div>
+        </div>
+
+        <div class="q">
+          <div class="q-h"><span class="n">4</span><h3>Who else is affected if it fails?</h3><span class="dim">Impact</span></div>
+          <div class="q-body">
+            <div class="scale" id="o-nf" role="radiogroup" aria-label="Non-financial impact"></div>
+            <div class="scale-desc" id="d-nf" aria-live="polite"></div>
+            <div style="display:flex;gap:10px;align-items:center"><button class="i" data-info="nf" aria-expanded="false" aria-label="About non-financial impact">i</button><span class="small muted">Impact takes the higher of questions 3 and 4</span></div>
+          </div>
+        </div>
+
+        <div class="q">
+          <div class="q-h"><span class="n">5</span><h3>How much does the outcome depend on it?</h3><span class="dim">Reliance</span></div>
+          <div class="q-body">
+            <div class="scale" id="o-rel" role="radiogroup" aria-label="Reliance"></div>
+            <div class="scale-desc" id="d-rel" aria-live="polite"></div>
+            <div style="display:flex;gap:10px;align-items:center"><button class="i" data-info="rel" aria-expanded="false" aria-label="About reliance">i</button><span class="small muted">Autonomy and the degree of human involvement</span></div>
+          </div>
+        </div>
+
+        <div class="q">
+          <div class="q-h"><span class="n">6</span><h3>Controls in place</h3><button class="i" data-info="controls" aria-expanded="false" aria-label="About controls and the residual tier">i</button></div>
+          <div class="q-body switches">
+            <label class="sw-row" for="c-human"><input type="checkbox" id="c-human"><span class="toggle" aria-hidden="true"></span><span><b>A person reviews every output before use</b><small>Lowers Reliance to 1</small></span></label>
+            <label class="sw-row" for="c-kill"><input type="checkbox" id="c-kill"><span class="toggle" aria-hidden="true"></span><span><b>Tested kill switch or rollback</b><small>Lowers Reliance by 1 <span class="ref">5.3</span></small></span></label>
+            <label class="sw-row" for="c-explain"><input type="checkbox" id="c-explain"><span class="toggle" aria-hidden="true"></span><span><b>Explainability method in use</b><small>e.g. SHAP or reason codes. Lowers Complexity by 1 where it is 3 or more</small></span></label>
+          </div>
+        </div>
+      </div>
+
+      <div class="verdict-col"><div class="verdict" id="verdict" aria-live="polite"></div></div>
+    </div>
+  </section>
+
+  <!-- PORTFOLIO -->
+  <section class="pane" id="p-portfolio" role="tabpanel" aria-labelledby="tab-portfolio" hidden>
+    <div class="pf-head">
+      <div><h2>The inventory as strata</h2><p class="muted" id="pf-sub"></p></div>
+      <label class="chk" for="f-sample"><span class="sw-row" style="display:contents"><input type="checkbox" id="f-sample" checked style="position:absolute;opacity:0"><span class="toggle" aria-hidden="true"></span></span>Illustrative inventory</label>
+    </div>
+    <div id="dash"></div>
+
+    <details class="assump" id="assump">
+      <summary>Assumptions you can change</summary>
+      <div class="as-grid">
+        <div>
+          <h4>Review cycle in months <button class="i" data-info="cycles" aria-expanded="false" aria-label="About review cycles">i</button></h4>
+          <label for="cy1">Tier 1 · independent re-validation <input type="number" id="cy1" min="1" max="60"></label>
+          <label for="cy2">Tier 2 · documented review <input type="number" id="cy2" min="1" max="60"></label>
+          <label for="cy3">Tier 3 · peer review <input type="number" id="cy3" min="1" max="60"></label>
+        </div>
+        <div>
+          <h4>Expected share of AI use cases, % <button class="i" data-info="distribution" aria-expanded="false" aria-label="About expected shares">i</button></h4>
+          <label for="b1lo">Tier 1 from <input type="number" id="b1lo" min="0" max="100"></label>
+          <label for="b1hi">Tier 1 to <input type="number" id="b1hi" min="0" max="100"></label>
+          <label for="b2lo">Tier 2 from <input type="number" id="b2lo" min="0" max="100"></label>
+          <label for="b2hi">Tier 2 to <input type="number" id="b2hi" min="0" max="100"></label>
+        </div>
+      </div>
+    </details>
+  </section>
+
+  <!-- METHOD -->
+  <section class="pane" id="p-method" role="tabpanel" aria-labelledby="tab-method" hidden>
+    <div class="pf-head"><div><h2>How the tiering works</h2><p class="muted">Six steps, each tied to a paragraph of the Guidelines. Where MAS leaves room for judgement, the choice made here is named as a choice.</p></div></div>
+    <div class="method" id="method"></div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap"><p>Illustrative. The scales, thresholds and review cycles are a proposed methodology built on the MAS Guidelines on Artificial Intelligence Risk Management (7 October 2026) and the MAS Information Paper on AI Model Risk Management (December 2024, cited as IP). They are not MAS requirements and not legal or regulatory advice. Paragraph numbers refer to the Guidelines unless marked IP. Everything you enter stays in your browser.</p></div>
+</footer>
+
+<div class="tierbar" id="tierbar" aria-hidden="true">
+  <span class="rock" id="tb-rock"></span>
+  <div><b id="tb-tier"></b> <span id="tb-score"></span></div>
+  <button type="button" id="tb-go" tabindex="-1">See why</button>
+</div>
+
+<script>
+(function(){
+"use strict";
+
+/* ---------- reference data ---------- */
+const TECH = {
+  rules:{label:"Fixed rules or formulae",hint:"Calculators, spreadsheets, rule engines, RPA",ai:false,c:0},
+  stat:{label:"Statistical model",hint:"e.g. a logistic regression scorecard",ai:true,c:1},
+  tree:{label:"Tree-based machine learning",hint:"e.g. gradient boosting, random forest",ai:true,c:2},
+  deep:{label:"Deep learning",hint:"Neural networks, vision, transformers",ai:true,c:3},
+  genai:{label:"Generative AI",hint:"Large language or image models",ai:true,c:4},
+  agent:{label:"AI agent with tool access",hint:"Plans and executes actions in systems",ai:true,c:5}
+};
+const FIN = [{v:1,s:"< 50k"},{v:2,s:"50k to 500k"},{v:3,s:"500k to 5m"},{v:4,s:"5m to 50m"},{v:5,s:"> 50m"}];
+const NF = [
+  {v:1,s:"Team",label:"Nobody outside the team",hint:"Internal drafting or analysis, no customer data involved"},
+  {v:2,s:"Internal",label:"Internal decisions or processes",hint:"Feeds internal reports, routing or prioritisation"},
+  {v:3,s:"Customers",label:"Customers receive its output",hint:"Information or service reaches customers"},
+  {v:4,s:"Individuals",label:"Outcomes for individual customers or staff",hint:"Credit, pricing, suitability, claims, hiring; fairness applies"},
+  {v:5,s:"Regulatory",label:"A regulatory obligation or critical service",hint:"AML, regulatory reporting, payments, market conduct"}
+];
+const REL = [
+  {v:1,s:"Checked",label:"A person checks every output before use",hint:"Human in the loop on each output"},
+  {v:2,s:"Sampled",label:"A person reviews by exception or sample",hint:"Most outputs are used as produced"},
+  {v:3,s:"Overridable",label:"Feeds decisions that people can override",hint:"Human over the loop"},
+  {v:4,s:"Automatic",label:"Acts automatically within limits",hint:"People monitor and step in on alerts"},
+  {v:5,s:"Autonomous",label:"Acts autonomously, including transactions",hint:"Executes actions without prior approval"}
+];
+const TIER_NAME = {1:"Tier 1",2:"Tier 2",3:"Tier 3",BG:"Basic governance",OOS:"Out of scope"};
+const TIER_DESC = {1:"Independent validation",2:"Documented review",3:"Peer review",BG:"Governance only",OOS:"Not AI"};
+
+const INFO = {
+  tech:"MAS treats machine-based systems whose outputs are derived through learned premises as AI (1.3). Tools whose outputs follow only from rules or formulae written by people are out of scope (1.3, footnote 6). A logistic regression can count as both a statistical model and AI (IP, Annex A). The technique sets the starting point for Complexity (4.12b). For third-party AI, limited visibility into the model and its data raises Complexity, and AI switched on inside software the bank already uses must be identified too (4.2, footnote 21). Self-updating AI needs enhanced change controls (5.25c). Here that tightens monitoring but does not move the tier, because MAS places change frequency under change management, not materiality.",
+  fin:"Impact is the potential consequence of a failure, malfunction or poor performance (4.12a). Use the extreme but plausible loss, not the expected one. If the worst case is a loss of SGD 30,000, the use case cannot reach a high tier however complex the model is. The bands assume a mid-sized bank and are meant to be scaled to the institution's capital and risk appetite.",
+  nf:"Impact also covers customers and other stakeholders: fairness, ethical conduct, consumer protection and the sensitivity of the data processed (4.12a). The Impact rating is the higher of the financial and the non-financial answer, so a use case with a small loss figure can still rate high if it decides on individual customers.",
+  rel:"Reliance is how far the decision or output depends on the AI: the autonomy granted and the degree of human involvement or oversight (4.12c). AI agents with authority to act sit at the top of the scale.",
+  controls:"MAS asks for materiality before controls (inherent) and after them (residual). The residual result must sit within risk appetite before deployment (4.11). Here human review and a tested kill switch lower Reliance, and explainability tooling lowers Complexity. Impact never moves: a control changes whether a failure is caught, not what it would cost. Validation depth follows the inherent tier.",
+  score:"Score = Impact × the average of Complexity and Reliance, from 1 to 25. Impact multiplies, so complexity alone cannot lift a low-impact use case. 15 and above is Tier 1, 8 up to 15 is Tier 2, below 8 is Tier 3. Two rules sit on top: the fat-tail rule and the Impact cap.",
+  fattail:"Impact 3 or higher, Complexity 5 and Reliance 4 or higher goes to Tier 1 even below a score of 15. An average smooths out exactly this combination: an opaque model acting with little human check on a material process.",
+  cap:"Impact 1 allows at most Tier 3, Impact 2 at most Tier 2. The multiplicative score already produces this. The explicit cap keeps it true if the thresholds are ever recalibrated.",
+  bg:"Where poor performance is unlikely to have a material adverse impact, basic governance replaces full lifecycle controls (2.3). The Guidelines name drafting, summarising and internal search with human review as examples (2.4). Here that means Impact 1 and a person checks every output.",
+  coverage:"Share of use cases in each tier with a review inside the current cycle. For high-risk use cases MAS expects formal independent validation before deployment (5.19) and regular independent re-validation (5.24), so anything below 100% in Tier 1 is a finding rather than a planning gap.",
+  cycles:"MAS does not prescribe review frequencies. Frequency and rigour of monitoring and re-validation should follow risk materiality (5.23, 5.24), and re-validation is also triggered by monitoring breaches, significant changes or new external risks (5.24). The cycles here are a policy choice.",
+  distribution:"The split across tiers is a calibration check, not a quota. If too many use cases land in Tier 1, validation capacity spreads thin and the impact bands are probably set too low. If almost none do, the scale is probably too lenient.",
+  map:"Each dot is one use case, placed by Impact (rows) and Complexity (columns). Dot size shows Reliance, colour shows the final tier. Hatched rows are capped by Impact: nothing there can reach Tier 1, whatever the complexity.",
+  hist:"Scores across the inventory, with the Tier 2 and Tier 1 thresholds marked. Bars carry the final tier, so a use case pulled up by the fat-tail rule shows as Tier 1 inside the Tier 2 range. That right-hand tail is where independent validation capacity goes."
+};
+
+const REQ = {
+  1:[["Formal independent validation before deployment","5.19"],["Regular independent re-validation","5.24"],["Continuous monitoring with early-warning thresholds","5.23"],["Tested contingency plan, kill switch where relevant","5.3"]],
+  2:[["Documented review by someone outside development","5.20"],["Periodic monitoring against defined thresholds","5.23"],["Findings reported to the approval body","5.21"]],
+  3:[["Peer review of key development and deployment steps","5.20"],["Proportionate monitoring, re-review on triggers","5.24"]],
+  BG:[["Named senior manager accountable for AI oversight","2.5a"],["Usage rules and mandatory human review","2.5b"],["Approved tool list, training, compliance checks","2.5c to f"]],
+  OOS:[["Existing model or end-user computing controls apply","1.3"],["The control function is the final arbiter of this call","4.3"]]
+};
+
+const EXAMPLES = [
+  {id:"ex-credit",name:"Retail credit scoring (vendor model)",shows:"Opaque vendor model deciding on customers",tech:"deep",tp:true,dyn:false,fin:4,nf:4,rel:4},
+  {id:"ex-aml",name:"Transaction monitoring alert scoring",shows:"Simple model, Tier 1 through a regulatory duty",tech:"tree",tp:false,dyn:false,fin:3,nf:5,rel:4},
+  {id:"ex-agent",name:"Loan operations agent posting entries",shows:"Fat-tail rule lifts it from Tier 2",tech:"agent",tp:false,dyn:false,fin:3,nf:2,rel:4},
+  {id:"ex-atm",name:"ATM cash demand forecast",shows:"Complex and automatic, small worst case",tech:"deep",tp:false,dyn:true,fin:1,nf:1,rel:4},
+  {id:"ex-notes",name:"Meeting notes summariser",shows:"Generative AI under basic governance",tech:"genai",tp:true,dyn:false,fin:1,nf:1,rel:1},
+  {id:"ex-sheet",name:"Treasury limit spreadsheet",shows:"Formula-based tool, not AI",tech:"rules",tp:false,dyn:false,fin:3,nf:2,rel:3}
+];
+
+/* name, area, tech, thirdParty, dynamic, fin, nonfin, reliance, monthsSinceReview|null */
+const SAMPLE_RAW = [
+  ["Retail credit scoring (vendor model)","Credit","deep",1,0,4,4,4,6],
+  ["SME early-warning signals","Credit","tree",0,0,3,2,3,14],
+  ["Property valuation model","Credit","tree",0,0,3,3,4,5],
+  ["Mortgage prepayment estimate","Treasury","tree",0,0,3,2,3,30],
+  ["Collections prioritisation","Credit","tree",0,0,2,4,3,30],
+  ["Transaction monitoring alert scoring","AML","tree",0,0,3,5,4,9],
+  ["Card fraud detection","Fraud","deep",0,1,4,3,5,3],
+  ["Name-screening match scoring","AML","tree",1,0,3,5,2,10],
+  ["KYC document extraction","Onboarding","deep",1,0,2,3,2,null],
+  ["Scam payment detection","Fraud","tree",0,1,3,4,4,7],
+  ["Abnormal market movement detection","Markets","tree",0,0,3,2,2,20],
+  ["Intraday liquidity forecast","Treasury","deep",0,0,4,3,3,15],
+  ["Trade surveillance on communications","Compliance","deep",0,0,3,5,2,4],
+  ["Customer service chatbot","Customer","genai",1,0,2,3,4,8],
+  ["Next-best product recommendation","Customer","tree",0,0,2,3,4,null],
+  ["Complaint classification and routing","Customer","deep",0,0,1,2,3,null],
+  ["Call transcript summaries","Customer","genai",1,0,1,2,2,null],
+  ["Customer feedback sentiment","Customer","deep",0,0,1,1,2,null],
+  ["IT incident triage","Technology","tree",0,0,2,2,3,null],
+  ["ATM cash demand forecast","Operations","deep",0,1,1,1,4,40],
+  ["Invoice data extraction","Operations","deep",1,0,2,1,2,null],
+  ["Payment reconciliation matching","Operations","tree",0,0,3,2,4,11],
+  ["Loan operations agent posting entries","Operations","agent",0,0,3,2,4,null],
+  ["Coding assistant","Technology","genai",1,0,1,1,1,null],
+  ["Meeting notes summariser","Productivity","genai",1,0,1,1,1,null],
+  ["Email drafting assistant","Productivity","genai",1,0,1,1,1,null],
+  ["Internal policy search assistant","Productivity","genai",1,0,1,2,2,null],
+  ["Marketing image generation","Marketing","genai",1,0,1,1,1,null],
+  ["CV screening (HR vendor tool)","HR","tree",1,0,1,4,3,null],
+  ["Operational loss event classification","Risk","deep",0,0,1,2,2,null],
+  ["Emerging risk news scanning","Risk","genai",1,0,1,2,1,null],
+  ["Regulatory reporting anomaly checks","Finance","tree",0,0,2,5,2,2],
+  ["ESG data extraction from client reports","Risk","genai",1,0,2,2,2,null],
+  ["Lead scoring inside CRM software","Sales","tree",1,0,1,2,3,null],
+  ["Branch staffing forecast","Operations","tree",0,0,1,1,3,null],
+  ["Credit memo drafting assistant","Credit","genai",1,0,2,2,1,null],
+  ["Portfolio rebalancing suggestions","Wealth","tree",0,0,3,4,3,null],
+  ["Translation of client letters","Customer","genai",1,0,1,2,1,10],
+  ["Treasury limit spreadsheet","Treasury","rules",0,0,3,2,3,null],
+  ["Fee calculation engine","Operations","rules",0,0,2,3,4,null]
+];
+
+/* ---------- engine ---------- */
+function grade(I,C,R){
+  const S=I*(C+R)/2;
+  if(I===1&&R===1) return {tier:"BG",S,I,C,R,fat:false,base:"BG"};
+  const base=S>=15?1:(S>=8?2:3);
+  let t=base,fat=false;
+  if(I>=3&&C>=5&&R>=4&&t>1){t=1;fat=true}
+  if(I===1&&t<3) t=3;
+  if(I===2&&t<2) t=2;
+  return {tier:t,S,I,C,R,fat,base};
+}
+function assess(u){
+  const tech=TECH[u.tech], I=Math.max(u.fin,u.nf);
+  if(!tech.ai) return {tier:"OOS",ai:false,I,C:0,R:u.rel,S:null,fat:false};
+  const C=Math.min(5,tech.c+(u.tp?1:0));
+  const g=grade(I,C,u.rel); g.ai=true; return g;
+}
+function residual(u,ctl){
+  const a=assess(u); if(!a.ai) return null;
+  let R=a.R,C=a.C;
+  if(ctl.human) R=1;
+  if(ctl.kill) R=Math.max(1,R-1);
+  if(ctl.explain&&C>=3) C-=1;
+  const g=grade(a.I,C,R); g.ai=true; return g;
+}
+
+/* ---------- storage ---------- */
+const KEY="ai-tiering-v1";
+function load(){try{const s=JSON.parse(localStorage.getItem(KEY)||"{}");return s&&typeof s==="object"?s:{}}catch(e){return {}}}
+function save(){try{localStorage.setItem(KEY,JSON.stringify(store))}catch(e){}}
+const store=Object.assign({user:[],reviewed:{},settings:null,showSample:true},load());
+if(!Array.isArray(store.user)) store.user=[];
+if(!store.reviewed||typeof store.reviewed!=="object") store.reviewed={};
+
+const NOW=new Date(), NOW_M=NOW.getFullYear()*12+NOW.getMonth();
+const mLabel=m=>new Date(Math.floor(m/12),m%12,1).toLocaleDateString("en-GB",{month:"short",year:"numeric"});
+const SAMPLE=SAMPLE_RAW.map((r,i)=>({id:"s"+i,name:r[0],area:r[1],tech:r[2],tp:!!r[3],dyn:!!r[4],fin:r[5],nf:r[6],rel:r[7],lastM:r[8]===null?null:NOW_M-r[8],src:"sample"}));
+
+/* ---------- helpers ---------- */
+const $=s=>document.querySelector(s);
+const esc=s=>String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const ref=p=>'<span class="ref">'+p+'</span>';
+const iBtn=(k,l)=>'<button class="i" data-info="'+k+'" aria-expanded="false" aria-label="'+esc(l)+'">i</button>';
+const meter=v=>{let h='<span class="meter" aria-hidden="true">';for(let i=1;i<=5;i++)h+='<span class="'+(i<=v?"f":"")+'"></span>';return h+'</span>'};
+const reduce=matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+/* info notes */
+document.addEventListener("click",e=>{
+  const b=e.target.closest(".i[data-info]"); if(!b) return;
+  e.preventDefault();
+  if(b._box){b._box.remove();b._box=null;b.setAttribute("aria-expanded","false");return}
+  const box=document.createElement("div"); box.className="note";
+  box.innerHTML='<span class="lbl">Why</span>'; box.appendChild(document.createTextNode(INFO[b.dataset.info]||""));
+  const host=b.closest(".q-h,.v-sec-h,.blk-h,h4,.row-i")||b.parentElement;
+  if(host.matches(".q-h")) host.parentElement.querySelector(".q-body").prepend(box);
+  else if(host.matches("h4")) host.insertAdjacentElement("afterend",box);
+  else host.insertAdjacentElement("afterend",box);
+  b._box=box; b.setAttribute("aria-expanded","true");
+});
+
+/* ---------- tabs ---------- */
+const tabs=[...document.querySelectorAll(".tab")];
+function showTab(id,focus){
+  tabs.forEach(t=>{const on=t.id===id;t.setAttribute("aria-selected",on);t.tabIndex=on?0:-1;document.getElementById(t.getAttribute("aria-controls")).hidden=!on});
+  if(focus) document.getElementById(id).focus();
+  if(id==="tab-portfolio") renderDash();
+  syncBar();
+}
+tabs.forEach((t,i)=>{
+  t.addEventListener("click",()=>{showTab(t.id);window.scrollTo({top:0,behavior:reduce?"auto":"smooth"})});
+  t.addEventListener("keydown",e=>{
+    if(e.key!=="ArrowRight"&&e.key!=="ArrowLeft") return;
+    const n=tabs[(i+(e.key==="ArrowRight"?1:tabs.length-1))%tabs.length]; showTab(n.id,true);
+  });
+});
+const hashMap={assess:"tab-assess",portfolio:"tab-portfolio",method:"tab-method"};
+
+/* ---------- assess ---------- */
+let cur=Object.assign({},EXAMPLES[0]), curEx=EXAMPLES[0].id;
+const ctl={human:false,kill:false,explain:false};
+
+function renderExamples(){
+  $("#examples").innerHTML=EXAMPLES.map(x=>'<button type="button" class="preset" data-ex="'+x.id+'" aria-pressed="'+(x.id===curEx)+'"><b>'+esc(x.name)+'</b><span>'+esc(x.shows)+'</span></button>').join("");
+}
+function scale(id,name,opts,val){
+  $(id).innerHTML=opts.map(o=>{const on=o.v===val;return '<label class="'+(on?"on":"")+'" data-v="'+o.v+'"><input type="radio" name="'+name+'" id="'+name+'-'+o.v+'" value="'+o.v+'"'+(on?" checked":"")+'><span class="v">'+o.v+'</span><span class="s">'+esc(o.s)+'</span></label>'}).join("");
+}
+function desc(id,opts,v){const o=opts.find(x=>x.v===v);$(id).innerHTML='<b>'+esc(o.label)+'</b><span>'+esc(o.hint)+'</span>'}
+function renderForm(){
+  $("#f-name").value=cur.name;
+  $("#o-tech").innerHTML=Object.keys(TECH).map(k=>{const t=TECH[k],on=k===cur.tech;return '<label class="tile'+(on?" on":"")+'"><input type="radio" name="tech" id="tech-'+k+'" value="'+k+'"'+(on?" checked":"")+'><b>'+esc(t.label)+'</b><span>'+esc(t.hint)+'</span><em>'+(t.ai?"C"+t.c:"no AI")+'</em></label>'}).join("");
+  scale("#o-fin","fin",FIN,cur.fin);
+  scale("#o-nf","nf",NF,cur.nf); desc("#d-nf",NF,cur.nf);
+  scale("#o-rel","rel",REL,cur.rel); desc("#d-rel",REL,cur.rel);
+  $("#f-tp").checked=cur.tp; $("#f-dyn").checked=cur.dyn;
+  $("#c-human").checked=ctl.human; $("#c-kill").checked=ctl.kill; $("#c-explain").checked=ctl.explain;
+}
+/* hover preview of scale descriptions */
+[["#o-nf","#d-nf",NF,"nf"],["#o-rel","#d-rel",REL,"rel"]].forEach(([s,d,opts,key])=>{
+  const el=$(s);
+  el.addEventListener("mouseover",e=>{const l=e.target.closest("label[data-v]");if(l) desc(d,opts,+l.dataset.v)});
+  el.addEventListener("mouseleave",()=>desc(d,opts,cur[key]));
+});
+
+document.getElementById("p-assess").addEventListener("change",e=>{
+  const t=e.target, m={tech:"tech",fin:"fin",nf:"nf",rel:"rel"};
+  if(m[t.name]) cur[t.name]=t.name==="tech"?t.value:+t.value;
+  else if(t.id==="f-tp") cur.tp=t.checked;
+  else if(t.id==="f-dyn") cur.dyn=t.checked;
+  else if(t.id==="c-human") ctl.human=t.checked;
+  else if(t.id==="c-kill") ctl.kill=t.checked;
+  else if(t.id==="c-explain") ctl.explain=t.checked;
+  else return;
+  curEx=null; const f=document.activeElement&&document.activeElement.id;
+  renderExamples(); renderForm(); renderVerdict();
+  if(f){const el=document.getElementById(f); if(el) el.focus({preventScroll:true});}
+});
+$("#f-name").addEventListener("input",e=>{cur.name=e.target.value});
+$("#examples").addEventListener("click",e=>{
+  const b=e.target.closest("[data-ex]"); if(!b) return;
+  cur=Object.assign({},EXAMPLES.find(z=>z.id===b.dataset.ex)); curEx=cur.id;
+  ctl.human=ctl.kill=ctl.explain=false;
+  renderExamples(); renderForm(); renderVerdict();
+});
+
+function settings(){return Object.assign({},DEF,store.settings||{})}
+const DEF={cy1:12,cy2:12,cy3:24,b1lo:3,b1hi:15,b2lo:15,b2hi:35};
+const cycleFor=t=>{const s=settings();return t===1?s.cy1:t===2?s.cy2:t===3?s.cy3:null};
+
+function renderVerdict(){
+  const a=assess(cur);
+  let h='<div class="v-top"><span class="eyebrow">Inherent tier</span>'+(a.ai?'<span class="v-score">Score <b class="num">'+a.S.toFixed(1)+'</b> of 25</span>':'')+'</div>';
+  h+='<div class="v-tier">'+TIER_NAME[a.tier]+'</div>';
+  h+='<div class="core" aria-label="Position among the tiers">'+[1,2,3,"BG","OOS"].map(t=>'<div class="stratum'+(t===a.tier?" on":" dim")+'"><span class="rock hx-'+t+'"></span><span class="nm">'+TIER_NAME[t]+'</span><span class="ds">'+TIER_DESC[t]+'</span></div>').join("")+'</div>';
+  if(a.ai) h+='<div class="meters"><span>Impact</span>'+meter(a.I)+'<span class="num">'+a.I+'</span><span>Complexity</span>'+meter(a.C)+'<span class="num">'+a.C+'</span><span>Reliance</span>'+meter(a.R)+'<span class="num">'+a.R+'</span></div>';
+
+  const st=[];
+  if(!a.ai) st.push('<b>Is it AI?</b> No. Outputs follow from rules or formulae written by people '+ref("1.3"));
+  else{
+    st.push('<b>Is it AI?</b> Yes, outputs are derived from learned patterns '+ref("1.3"));
+    st.push(a.tier==="BG"?'<b>Basic governance</b> <span class="hit">applies.</span> Impact 1 and every output checked by a person '+ref("2.3"):'<b>Basic governance</b> does not apply. It needs Impact 1 and a person checking every output '+ref("2.3"));
+    if(a.tier!=="BG"){
+      st.push('<b>Score</b> <span class="num">'+a.I+' × ('+a.C+' + '+a.R+') ÷ 2 = '+a.S.toFixed(1)+'</span>, which gives Tier '+a.base);
+      st.push(a.fat?'<b>Fat-tail rule</b> <span class="hit">applies.</span> Impact '+a.I+', Complexity 5 and Reliance '+a.R+' move it to Tier 1':'<b>Fat-tail rule</b> does not apply. It needs Impact 3+, Complexity 5, Reliance 4+');
+      st.push(a.I<=2?'<b>Impact cap</b> holds. Impact '+a.I+' allows at most Tier '+(a.I===1?3:2)+', whatever the complexity':'<b>Impact cap</b> is not binding at Impact '+a.I);
+    }
+  }
+  h+='<div class="v-sec"><div class="v-sec-h"><h4>How it got here</h4>'+(a.ai?iBtn("score","How the score works"):"")+'</div><ol class="steps">'+st.map((s,i)=>'<li><span class="k">'+(i+1)+'</span><span>'+s+'</span></li>').join("")+'</ol></div>';
+
+  const cy=cycleFor(a.tier);
+  let mon="";
+  if(cy){mon=a.tier===1?"continuous":(a.tier===2?"quarterly":"annual attestation"); if(cur.dyn) mon=a.tier===1?"continuous with enhanced drift checks":(a.tier===2?"monthly, as it updates itself":"quarterly, as it updates itself");}
+  h+='<div class="v-sec"><div class="v-sec-h"><h4>What it triggers</h4>'+(a.tier==="BG"?iBtn("bg","About basic governance"):a.fat?iBtn("fattail","About the fat-tail rule"):a.ai&&a.I<=2?iBtn("cap","About the Impact cap"):"")+'</div><ul class="req">'+REQ[a.tier].map(r=>'<li>'+esc(r[0])+' '+ref(r[1])+'</li>').join("")+'</ul>'+(cy?'<p class="small muted" style="margin-top:8px">In this policy: review every <span class="num">'+cy+'</span> months, monitoring '+mon+'.</p>':'')+'</div>';
+
+  if(a.ai){
+    if(ctl.human||ctl.kill||ctl.explain){
+      const r=residual(cur,ctl);
+      h+='<div class="v-sec"><div class="v-sec-h"><h4>After controls</h4></div><div class="resid"><span class="rock hx-'+r.tier+'"></span><p><b style="font-weight:500">'+TIER_NAME[r.tier]+'</b>, score <span class="num">'+r.S.toFixed(1)+'</span>. Validation still follows the inherent tier. The residual tier is what must sit within risk appetite before deployment '+ref("4.11")+'.</p></div></div>';
+    } else h+='<div class="v-sec"><p class="small muted">Switch on the controls in place (question 6) to see the residual tier.</p></div>';
+  }
+  h+='<div class="add-row"><button type="button" class="btn btn-solid" id="add">Add to portfolio</button><span id="added" class="small muted" aria-live="polite"></span></div>';
+  $("#verdict").innerHTML=h;
+  $("#add").addEventListener("click",addToPortfolio);
+
+  $("#tb-rock").className="rock hx-"+a.tier; $("#tb-tier").textContent=TIER_NAME[a.tier]; $("#tb-score").textContent=a.ai?"score "+a.S.toFixed(1):"";
+}
+
+function addToPortfolio(){
+  store.user.push({id:"u"+Date.now().toString(36),name:(cur.name||"Untitled use case").slice(0,80),area:"Added by you",tech:cur.tech,tp:!!cur.tp,dyn:!!cur.dyn,fin:cur.fin,nf:cur.nf,rel:cur.rel,lastM:null,src:"user"});
+  save();
+  $("#added").innerHTML='Added. <a href="#portfolio" id="goPf">View portfolio</a>';
+  $("#goPf").addEventListener("click",e=>{e.preventDefault();showTab("tab-portfolio");window.scrollTo({top:0})});
+}
+
+/* mobile tier bar */
+let verdictVisible=true;
+function syncBar(){
+  const show=!document.getElementById("p-assess").hidden&&!verdictVisible&&matchMedia("(max-width:900px)").matches;
+  $("#tierbar").classList.toggle("show",show); $("#tierbar").setAttribute("aria-hidden",!show); $("#tb-go").tabIndex=show?0:-1;
+}
+if("IntersectionObserver" in window){
+  new IntersectionObserver(es=>{verdictVisible=es[0].isIntersecting;syncBar()},{threshold:0.05}).observe(document.getElementById("verdict"));
+}
+$("#tb-go").addEventListener("click",()=>document.getElementById("verdict").scrollIntoView({behavior:reduce?"auto":"smooth",block:"start"}));
+
+/* ---------- portfolio ---------- */
+["cy1","cy2","cy3","b1lo","b1hi","b2lo","b2hi"].forEach(k=>{
+  const el=document.getElementById(k); el.value=settings()[k];
+  el.addEventListener("change",()=>{let v=Math.round(+el.value);if(!isFinite(v)||v<0)v=DEF[k];if(k.startsWith("cy")&&v<1)v=1;if(v>100)v=100;el.value=v;store.settings=Object.assign(settings(),{[k]:v});save();renderDash();renderVerdict()});
+});
+const sb=$("#f-sample"); sb.checked=store.showSample!==false;
+sb.addEventListener("change",()=>{store.showSample=sb.checked;save();renderDash()});
+let filter="all";
+
+function items(){
+  return (store.showSample!==false?SAMPLE:[]).concat(store.user).map(u=>{
+    const a=assess(u), lastM=store.reviewed[u.id]!==undefined?store.reviewed[u.id]:u.lastM, cy=cycleFor(a.tier);
+    let status="na",due=null;
+    if(cy){ if(lastM===null||lastM===undefined) status="never"; else {due=lastM+cy;status=NOW_M<=due?"in":"over"} }
+    return Object.assign({},u,{a,lastM,status,due});
+  });
+}
+
+function renderDash(){
+  const s=settings(), all=items(), scope=all.filter(x=>x.a.ai), n=scope.length;
+  const cnt=t=>scope.filter(x=>x.a.tier===t).length, share=t=>n?cnt(t)/n*100:0;
+  const cov=t=>{const g=scope.filter(x=>x.a.tier===t);return g.length?g.filter(x=>x.status==="in").length/g.length*100:null};
+  $("#pf-sub").textContent=(store.showSample!==false?SAMPLE.length+" illustrative use cases from a mid-sized bank":"Illustrative inventory hidden")+(store.user.length?", plus "+store.user.length+" added by you":"")+". "+(all.length-n)+" non-AI tools sit outside the scope.";
+  if(!all.length){$("#dash").innerHTML='<div class="empty">No use cases yet. Add one from Assess, or switch the illustrative inventory back on.</div>';return}
+
+  const c1=cov(1), over=scope.filter(x=>x.status==="over").length, never=scope.filter(x=>x.status==="never").length;
+  let h='<div class="kpis">';
+  h+='<div class="kpi"><span class="v">'+n+'</span><span class="l">AI use cases in scope</span></div>';
+  h+='<div class="kpi"><span class="v">'+cnt(1)+'</span><span class="l">in Tier 1, '+share(1).toFixed(0)+'% of the inventory</span></div>';
+  h+='<div class="kpi'+(c1!==null&&c1<100?" alert":"")+'"><span class="v">'+(c1===null?"n/a":c1.toFixed(0)+"%")+'</span><span class="l">of Tier 1 validated in cycle. Expected: 100% '+ref("5.19")+'</span></div>';
+  h+='<div class="kpi"><span class="v">'+(over+never)+'</span><span class="l">reviews overdue ('+over+') or never done ('+never+')</span></div>';
+  h+='</div>';
+
+  /* strata column + coverage */
+  const layers=[[1,s.b1lo,s.b1hi],[2,s.b2lo,s.b2hi],[3,null,null],["BG",null,null]];
+  h+='<div class="row2"><div class="blk"><div class="blk-h"><h3>Where the use cases sit</h3>'+iBtn("distribution","About the split across tiers")+'</div><div class="column">';
+  layers.forEach(([t,lo,hi])=>{
+    const p=share(t), c=cnt(t), minH=Math.round(46+p*2.4);
+    let exp="";
+    if(lo!==null){const inBand=p>=lo&&p<=hi;exp='<span class="exp'+(inBand?"":" out")+'">'+(inBand?"within ":"outside ")+lo+" to "+hi+"%</span>"} else exp='<span class="exp"></span>';
+    h+='<div class="layer" style="min-height:'+minH+'px"><span class="rock hx-'+t+'"></span><span class="txt"><b class="num">'+c+' · '+p.toFixed(0)+'%</b><span>'+TIER_NAME[t]+' · '+TIER_DESC[t].toLowerCase()+'</span></span>'+exp+'</div>';
+  });
+  h+='</div></div>';
+
+  h+='<div class="blk"><div class="blk-h"><h3>Validated within cycle</h3>'+iBtn("coverage","About validation coverage")+'</div><div class="cov">';
+  [1,2,3].forEach(t=>{const c=cov(t),g=cnt(t);h+='<div class="cov-r"><span>'+TIER_NAME[t]+'</span><span class="cov-t"><span class="cov-f hx-'+t+'" style="width:'+(c||0)+'%"></span>'+(t===1?'<span class="cov-m"></span>':'')+'</span><span class="cov-v">'+(c===null?"n/a":c.toFixed(0)+"%")+' <span class="muted">of '+g+'</span></span></div>'});
+  h+='<div class="cov-r"><span>Basic gov.</span><span class="small muted" style="grid-column:span 2">No validation. Governance checks under '+ref("2.5")+'</span></div>';
+  h+='</div><div class="legend"><span class="lg"><span class="lg-m"></span>Tier 1 expectation: independent validation before deployment</span><span>Cycles: '+s.cy1+', '+s.cy2+' and '+s.cy3+' months</span></div></div></div>';
+
+  /* map + histogram */
+  h+='<div class="row2"><div class="blk"><div class="blk-h"><h3>Impact × Complexity</h3>'+iBtn("map","How to read the map")+'</div><div class="mapwrap"><div class="map">';
+  for(let I=5;I>=1;I--){
+    h+='<div class="ax">Impact '+I+'</div>';
+    for(let C=1;C<=5;C++){
+      const here=scope.filter(x=>x.a.I===I&&x.a.C===C);
+      h+='<div class="cell'+(I<=2?" cap":"")+'">'+here.map(x=>{const z=6+x.a.R*2;return '<span class="dot d-'+x.a.tier+(x.src==="user"?" mine":"")+'" style="width:'+z+'px;height:'+z+'px" title="'+esc(x.name)+' · '+TIER_NAME[x.a.tier]+' · Reliance '+x.a.R+'"></span>'}).join("")+'</div>';
+    }
+  }
+  h+='<div class="corner"></div>';for(let C=1;C<=5;C++)h+='<div class="ax axc">C '+C+'</div>';
+  h+='</div></div><div class="legend">'+[1,2,3,"BG"].map(t=>'<span class="lg"><span class="dot d-'+t+'" style="width:10px;height:10px"></span>'+TIER_NAME[t]+'</span>').join("")+'<span>Larger dot, higher Reliance</span>'+(store.user.length?'<span>Ringed: yours</span>':'')+'</div></div>';
+  h+='<div class="blk"><div class="blk-h"><h3>The tail</h3>'+iBtn("hist","How to read the distribution")+'</div>'+hist(scope)+'</div></div>';
+
+  /* inventory */
+  const order={1:0,2:1,3:2,BG:3,OOS:4};
+  let rows=all.slice().sort((x,y)=>order[x.a.tier]-order[y.a.tier]||(y.a.S||0)-(x.a.S||0));
+  if(filter!=="all") rows=rows.filter(x=>String(x.a.tier)===filter);
+  h+='<div class="inv"><div class="inv-h"><h3>Inventory</h3><div class="filters" role="group" aria-label="Filter by tier">'+[["all","All"],["1","Tier 1"],["2","Tier 2"],["3","Tier 3"],["BG","Basic gov."],["OOS","Out of scope"]].map(([k,l])=>'<button type="button" class="fbtn" data-f="'+k+'" aria-pressed="'+(filter===k)+'">'+l+'</button>').join("")+'</div></div>';
+  h+='<div class="tablewrap"><table><thead><tr><th>Use case</th><th>Area</th><th class="n">I</th><th class="n">C</th><th class="n">R</th><th class="n">Score</th><th>Tier</th><th>Review</th><th>Next due</th><th></th></tr></thead><tbody>';
+  rows.forEach(x=>{
+    const a=x.a, stT={in:"In cycle",over:"Overdue",never:a.tier===1?"No validation on record":"Never reviewed",na:"Not applicable"}[x.status];
+    h+='<tr><td>'+esc(x.name)+(x.src==="user"?'<span class="tag">yours</span>':'')+(a.fat?'<span class="tag fat">fat tail</span>':'')+(x.dyn?'<span class="tag">self-updating</span>':'')+'</td><td class="muted">'+esc(x.area)+'</td><td class="n">'+a.I+'</td><td class="n">'+(a.ai?a.C:"")+'</td><td class="n">'+(a.ai?a.R:"")+'</td><td class="n">'+(a.S===null?"":a.S.toFixed(1))+'</td><td><span class="tierc"><span class="sw hx-'+a.tier+'"></span>'+TIER_NAME[a.tier]+'</span></td><td><span class="st '+x.status+'">'+stT+'</span></td><td class="num">'+(x.due!==null?mLabel(x.due):(x.status==="never"?"Now":""))+'</td><td style="white-space:nowrap;text-align:right">'+(x.status!=="na"&&x.status!=="in"?'<button type="button" class="btn btn-sm" data-rev="'+x.id+'">Mark reviewed</button> ':'')+(x.src==="user"?'<button type="button" class="btn btn-sm" data-del="'+x.id+'">Remove</button>':'')+'</td></tr>';
+  });
+  if(!rows.length) h+='<tr><td colspan="10" class="empty">No use cases in this tier.</td></tr>';
+  h+='</tbody></table></div><p class="small muted" style="margin-top:12px">Mark reviewed records a review this month, in your browser only. '+(Object.keys(store.reviewed).length?'<button type="button" class="btn btn-sm" id="resetRev">Reset review marks</button>':'')+'</p></div>';
+  $("#dash").innerHTML=h;
+}
+
+function hist(scope){
+  const W=520,H=240,L=30,R=8,T=26,B=42;
+  const bins=[];for(let lo=1;lo<25;lo+=2)bins.push({lo,hi:lo+2,c:{1:0,2:0,3:0,BG:0}});
+  scope.forEach(x=>{bins[Math.min(bins.length-1,Math.floor((x.a.S-1)/2))].c[x.a.tier]++});
+  const mx=Math.max(1,...bins.map(b=>b.c[1]+b.c[2]+b.c[3]+b.c.BG)), top=Math.max(4,Math.ceil(mx/4)*4);
+  const xS=v=>L+(v-1)/24*(W-L-R), yS=n=>T+(H-T-B)*(1-n/top);
+  const col={1:"var(--t1)",2:"var(--t2)",3:"var(--t3)",BG:"var(--tbg)"};
+  let g='<svg class="hist" viewBox="0 0 '+W+' '+H+'" width="100%" role="img" aria-label="Number of use cases by score, coloured by tier"><defs>';
+  g+='<pattern id="pt1" width="6" height="6" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><rect width="6" height="6" style="fill:var(--surface)"/><rect width="1.8" height="6" style="fill:var(--t1)"/><rect width="6" height="1.8" style="fill:var(--t1)"/></pattern>';
+  g+='<pattern id="pt2" width="7" height="7" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><rect width="7" height="7" style="fill:var(--surface)"/><rect width="1.7" height="7" style="fill:var(--t2)"/></pattern>';
+  g+='<pattern id="pt3" width="8" height="8" patternUnits="userSpaceOnUse"><rect width="8" height="8" style="fill:var(--surface)"/><circle cx="4" cy="4" r="1.5" style="fill:var(--t3)"/></pattern>';
+  g+='<pattern id="ptBG" width="10" height="10" patternUnits="userSpaceOnUse"><rect width="10" height="10" style="fill:var(--surface)"/><circle cx="5" cy="5" r="1.2" style="fill:var(--tbg)"/></pattern></defs>';
+  for(let k=0;k<=top;k+=top/4){const y=yS(k);g+='<line class="gl" x1="'+L+'" x2="'+(W-R)+'" y1="'+y+'" y2="'+y+'"/><text x="'+(L-8)+'" y="'+(y+4)+'" text-anchor="end">'+k+'</text>'}
+  [8,15].forEach(v=>{const x=xS(v);g+='<line class="zl" x1="'+x+'" x2="'+x+'" y1="'+(T-12)+'" y2="'+(H-B)+'"/>'});
+  [[1,8,"Tier 3 range"],[8,15,"Tier 2 range"],[15,25,"Tier 1 range"]].forEach(z=>{g+='<text x="'+((xS(z[0])+xS(z[1]))/2)+'" y="'+(T-12)+'" text-anchor="middle">'+z[2]+'</text>'});
+  bins.forEach(b=>{let y0=H-B;const x=xS(b.lo)+2,w=xS(b.hi)-xS(b.lo)-4;["BG",3,2,1].forEach(t=>{const n=b.c[t];if(!n)return;const hh=(H-T-B)*n/top;y0-=hh;g+='<rect x="'+x+'" y="'+y0+'" width="'+w+'" height="'+hh+'" fill="url(#pt'+t+')" style="stroke:'+col[t]+'" stroke-width="1"><title>'+n+' in '+TIER_NAME[t]+', score '+b.lo+' to '+b.hi+'</title></rect>'})});
+  g+='<line class="base" x1="'+L+'" x2="'+(W-R)+'" y1="'+(H-B)+'" y2="'+(H-B)+'"/>';
+  [1,5,8,10,15,20,25].forEach(v=>{g+='<text x="'+xS(v)+'" y="'+(H-B+17)+'" text-anchor="middle">'+v+'</text>'});
+  g+='<text x="'+((L+W-R)/2)+'" y="'+(H-6)+'" text-anchor="middle">Score: Impact × average of Complexity and Reliance</text></svg>';
+  return g+'<div class="legend">'+[1,2,3,"BG"].map(t=>'<span class="lg"><span class="sw hx-'+t+'"></span>'+TIER_NAME[t]+'</span>').join("")+'</div>';
+}
+
+$("#dash").addEventListener("click",e=>{
+  const f=e.target.closest("[data-f]");if(f){filter=f.dataset.f;renderDash();return}
+  const r=e.target.closest("[data-rev]");if(r){store.reviewed[r.dataset.rev]=NOW_M;save();renderDash();return}
+  const d=e.target.closest("[data-del]");if(d){store.user=store.user.filter(x=>x.id!==d.dataset.del);delete store.reviewed[d.dataset.del];save();renderDash();return}
+  if(e.target.id==="resetRev"){store.reviewed={};save();renderDash()}
+});
+
+/* ---------- method ---------- */
+function renderMethod(){
+  let mt='<div class="mtwrap"><table class="mtab" aria-label="Tier by Impact and average of Complexity and Reliance"><thead><tr><th>Impact</th>';for(let a=1;a<=5;a++)mt+='<th>C, R = '+a+'</th>';mt+='</tr></thead><tbody>';
+  for(let I=5;I>=1;I--){mt+='<tr><th>'+I+'</th>';for(let a=1;a<=5;a++){const g=grade(I,a,a);mt+='<td><span class="hx-'+g.tier+'"><b>'+(g.tier==="BG"?"BG":"T"+g.tier)+'</b></span></td>'}mt+='</tr>'}
+  mt+='</tbody></table></div>';
+  const rows=[
+    ["Identify","Is it AI at all?",'<p>AI means machine-based systems or models that derive outputs through learned premises from the data they receive '+ref("1.3")+'. Rule-based tools, formulae written by people and robotic process automation are out of scope '+ref("fn 6")+'. Generative AI and AI agents are in '+ref("1.5")+'. A designated control function decides borderline cases and is the final arbiter '+ref("4.3")+'. AI embedded in third-party software counts too '+ref("4.2")+'.</p>'],
+    ["Rate","Three dimensions, at a minimum",'<p>The materiality assessment has to cover at least Impact, Complexity and Reliance '+ref("4.12")+'. MAS found the same three groupings in practice across the banks it reviewed '+ref("IP 5.3.1")+'.</p><ul><li><b>Impact</b> is the worst plausible consequence for the bank, its customers and other stakeholders, taken as the higher of the financial and non-financial rating.</li><li><b>Complexity</b> reflects the technique, its novelty, explainability and the visibility into third-party models.</li><li><b>Reliance</b> reflects autonomy and the degree of human involvement.</li></ul><p>MAS rates the use case, not the model '+ref("4.10")+'. One model used in two places can carry two ratings.</p>'],
+    ["Combine","From three ratings to one tier",'<div class="formula">Score = Impact × (Complexity + Reliance) ÷ 2<span>15 and above: Tier 1 · 8 up to 15: Tier 2 · below 8: Tier 3</span></div><p>Impact multiplies, so a complex model with a small worst case stays low. Three rules sit on top.</p><ul><li><b>Fat tail.</b> Impact 3+, Complexity 5 and Reliance 4+ go to Tier 1 even below 15.</li><li><b>Impact cap.</b> Impact 1 allows at most Tier 3, Impact 2 at most Tier 2.</li><li><b>Basic governance.</b> Impact 1 with a person checking every output '+ref("2.3")+'.</li></ul>'+mt+'<p class="small muted" style="margin-top:10px">The table sets Complexity and Reliance equal. Fat-tail cases sit off this diagonal.</p>'],
+    ["Mitigate","Inherent and residual",'<p>Each use case is rated before controls and after them '+ref("4.11")+'. The residual rating must be within risk appetite before deployment. Here controls can lower Reliance (human review, kill switch) and Complexity (explainability tooling). They never lower Impact. Validation depth follows the inherent tier, because the controls themselves are what validation has to test.</p>'],
+    ["Validate","What each tier triggers",'<ul><li><b>Tier 1.</b> Independent validation before deployment '+ref("5.19")+', regular independent re-validation '+ref("5.24")+', continuous monitoring '+ref("5.23")+' and tested contingency plans '+ref("5.3")+'.</li><li><b>Tier 2 and Tier 3.</b> Documented review by someone outside development, such as peer review '+ref("5.20")+', with proportionate monitoring.</li><li><b>Basic governance.</b> Accountability, usage rules, an approved tool list, training and compliance checks '+ref("2.5")+'.</li></ul><p>MAS sets no review frequency. The default cycles here, 12, 12 and 24 months, are a policy choice and can be changed on the Portfolio tab. Self-updating models get tighter monitoring '+ref("5.25c")+' without a higher tier.</p>'],
+    ["Plan","Timeline",'<ul><li><b>7 October 2026.</b> Guidelines published.</li><li><b>7 October 2027.</b> Oversight, identification, inventory and materiality assessment expected (Sections 3 and 4).</li><li><b>7 October 2028.</b> Lifecycle controls and capability expected (Sections 5 and 6) '+ref("1.8")+'.</li></ul><p>Proportionality applies throughout '+ref("1.6, 2.1")+'. Identification, inventory and tiering come first, and that is the step this page covers.</p>']
+  ];
+  $("#method").innerHTML=rows.map((r,i)=>'<div class="m-row"><div><span class="n">'+(i+1)+' · '+r[0]+'</span><h3>'+r[1]+'</h3></div><div>'+r[2]+'</div></div>').join("");
+}
+
+/* ---------- boot ---------- */
+renderExamples(); renderForm(); renderVerdict(); renderMethod();
+const h0=hashMap[location.hash.slice(1)]; showTab(h0||"tab-assess");
+addEventListener("resize",syncBar);
+})();
+</script>
+
+</body>
+</html>
