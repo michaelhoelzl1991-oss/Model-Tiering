@@ -91,6 +91,9 @@ section.pane{padding-bottom:88px}
 .preset span{font-size:13px;color:var(--muted);line-height:1.35}
 .preset[aria-pressed="true"]{background:var(--ink);color:var(--bg)}
 .preset[aria-pressed="true"] span{color:color-mix(in srgb,var(--bg) 72%,transparent)}
+.preset.edited{box-shadow:inset 0 0 0 2px var(--ink)}
+.preset .ed{font-size:12px;color:var(--copper);font-weight:500;margin-top:2px}
+.linkbtn{appearance:none;background:none;border:0;padding:0;font:500 14px var(--sans);color:var(--ink);text-decoration:underline;text-underline-offset:3px;cursor:pointer}
 @media (max-width:640px){.presets{grid-template-columns:repeat(2,minmax(0,1fr))}}
 
 .q{padding-block:26px;border-top:1px solid var(--rule);display:flex;flex-direction:column;gap:12px}
@@ -144,6 +147,24 @@ section.pane{padding-bottom:88px}
 .sw-row input:focus-visible+.toggle{outline:2px solid var(--focus);outline-offset:2px}
 .sw-row b{font-weight:500;font-size:14.5px;display:block}
 .sw-row small{font-size:13px;color:var(--muted)}
+.hr-block{display:flex;flex-direction:column;gap:12px}
+.hr-checks{margin-left:50px;padding:4px 0 4px 18px;border-left:1px solid var(--ink);display:flex;flex-direction:column;gap:12px}
+@media (max-width:600px){.hr-checks{margin-left:8px;padding-left:14px}}
+.chk-row{position:relative;display:grid;grid-template-columns:20px minmax(0,1fr);gap:12px;align-items:start;cursor:pointer}
+.chk-row input{position:absolute;opacity:0;pointer-events:none}
+.chk-row .box{width:18px;height:18px;border:1px solid var(--muted);margin-top:2px;display:grid;place-items:center;transition:background .15s}
+.chk-row input:checked+.box{background:var(--ink);border-color:var(--ink)}
+.chk-row input:checked+.box::after{content:"";width:9px;height:5px;border-left:2px solid var(--bg);border-bottom:2px solid var(--bg);transform:translateY(-1px) rotate(-45deg)}
+.chk-row input:focus-visible+.box{outline:2px solid var(--focus);outline-offset:2px}
+.chk-row b{font-weight:500;font-size:14.5px;display:block}
+.chk-row small{font-size:13px;color:var(--muted)}
+.hr-verdict{font-size:14px;padding-top:10px;border-top:1px solid var(--rule)}
+.hr-verdict b{font-weight:600}
+.hr-verdict .lvl-none{color:var(--copper)}
+.resid-notes{list-style:none;margin:10px 0 0;padding:0;font-size:13.5px;color:var(--muted)}
+.resid-notes li{padding:4px 0 4px 16px;position:relative}
+.resid-notes li::before{content:"";position:absolute;left:0;top:13px;width:7px;height:1px;background:var(--muted)}
+.resid-notes .hit{color:var(--copper);font-weight:500}
 
 /* info */
 .i{appearance:none;width:22px;height:22px;border-radius:50%;border:1px solid var(--rule);background:transparent;color:var(--muted);font:italic 500 13px/1 var(--serif);cursor:pointer;display:inline-grid;place-items:center;padding:0;flex:none}
@@ -346,12 +367,12 @@ footer p{max-width:90ch}
   <section class="pane" id="p-assess" role="tabpanel" aria-labelledby="tab-assess">
     <div class="assess">
       <div class="form">
-        <div class="presets-h"><h3>Start from an example</h3><span class="small muted">Each one shows a rule</span></div>
+        <div class="presets-h"><h3>Start from an example</h3><span class="small muted" id="ex-note">Each one shows a rule</span></div>
         <div class="presets" id="examples" role="group" aria-label="Example use cases"></div>
 
         <div class="q first">
           <div class="q-h"><span class="n">1</span><h3>Name the use case</h3><span></span></div>
-          <div class="q-body"><label class="eyebrow" for="f-name" style="position:absolute;left:-9999px">Use case name</label><input class="name-in" id="f-name" type="text" maxlength="80" placeholder="e.g. Mortgage pre-approval assistant"></div>
+          <div class="q-body"><label class="eyebrow" for="f-name" style="position:absolute;left:-9999px">Use case name</label><input class="name-in" id="f-name" type="text" autocomplete="off" maxlength="80" placeholder="e.g. Mortgage pre-approval assistant"></div>
         </div>
 
         <div class="q">
@@ -359,8 +380,8 @@ footer p{max-width:90ch}
           <div class="q-body">
             <div class="tiles" id="o-tech" role="radiogroup" aria-label="Technique"></div>
             <div class="switches">
-              <label class="sw-row" for="f-tp"><input type="checkbox" id="f-tp"><span class="toggle" aria-hidden="true"></span><span><b>Third-party model with limited visibility</b><small>The vendor does not disclose design or training data in usable detail. Adds one point of Complexity.</small></span></label>
-              <label class="sw-row" for="f-dyn"><input type="checkbox" id="f-dyn"><span class="toggle" aria-hidden="true"></span><span><b>Updates itself automatically</b><small>Retrains in production. Tightens monitoring, does not change the tier.</small></span></label>
+              <label class="sw-row" for="f-tp"><input type="checkbox" autocomplete="off" id="f-tp"><span class="toggle" aria-hidden="true"></span><span><b>Third-party model with limited visibility</b><small>The vendor does not disclose design or training data in usable detail. Adds one point of Complexity.</small></span></label>
+              <label class="sw-row" for="f-dyn"><input type="checkbox" autocomplete="off" id="f-dyn"><span class="toggle" aria-hidden="true"></span><span><b>Updates itself automatically</b><small>Retrains in production. Tightens monitoring, does not change the tier.</small></span></label>
             </div>
           </div>
         </div>
@@ -394,9 +415,18 @@ footer p{max-width:90ch}
         <div class="q">
           <div class="q-h"><span class="n">6</span><h3>Controls in place</h3><button class="i" data-info="controls" aria-expanded="false" aria-label="About controls and the residual tier">i</button></div>
           <div class="q-body switches">
-            <label class="sw-row" for="c-human"><input type="checkbox" id="c-human"><span class="toggle" aria-hidden="true"></span><span><b>A person reviews every output before use</b><small>Lowers Reliance to 1</small></span></label>
-            <label class="sw-row" for="c-kill"><input type="checkbox" id="c-kill"><span class="toggle" aria-hidden="true"></span><span><b>Tested kill switch or rollback</b><small>Lowers Reliance by 1 <span class="ref">5.3</span></small></span></label>
-            <label class="sw-row" for="c-explain"><input type="checkbox" id="c-explain"><span class="toggle" aria-hidden="true"></span><span><b>Explainability method in use</b><small>e.g. SHAP or reason codes. Lowers Complexity by 1 where it is 3 or more</small></span></label>
+            <div class="hr-block">
+              <label class="sw-row" for="c-human"><input type="checkbox" autocomplete="off" id="c-human"><span class="toggle" aria-hidden="true"></span><span><b>A person reviews the outputs</b><small>Counts only if the review passes the checks below</small></span></label>
+              <div class="hr-checks" id="hr-checks" hidden>
+                <label class="chk-row" for="h0"><input type="checkbox" autocomplete="off" id="h0"><span class="box" aria-hidden="true"></span><span><b>Before it takes effect</b><small>The review happens before the output is used, sent or executed. A look afterwards only speeds up detection.</small></span></label>
+                <label class="chk-row" for="h1"><input type="checkbox" autocomplete="off" id="h1"><span class="box" aria-hidden="true"></span><span><b>Can stop it</b><small>The reviewer can reject or change the outcome and has the information to judge it. <span class="ref">5.9(b)</span></small></span></label>
+                <label class="chk-row" for="h2"><input type="checkbox" autocomplete="off" id="h2"><span class="box" aria-hidden="true"></span><span><b>Realistic volume</b><small>There is time to look at each case. Clearing thousands a day is clicking, not reviewing. <span class="ref">5.9</span></small></span></label>
+                <label class="chk-row" for="h3"><input type="checkbox" autocomplete="off" id="h3"><span class="box" aria-hidden="true"></span><span><b>Overrides tracked</b><small>How often reviewers reject or change outputs is recorded and looked at. <span class="ref">5.9(d)</span></small></span></label>
+                <p class="hr-verdict" id="hr-verdict" aria-live="polite"></p>
+              </div>
+            </div>
+            <label class="sw-row" for="c-kill"><input type="checkbox" autocomplete="off" id="c-kill"><span class="toggle" aria-hidden="true"></span><span><b>Tested kill switch or rollback</b><small>Lowers Reliance by 1 <span class="ref">5.3</span></small></span></label>
+            <label class="sw-row" for="c-explain"><input type="checkbox" autocomplete="off" id="c-explain"><span class="toggle" aria-hidden="true"></span><span><b>Explainability method in use</b><small>e.g. SHAP or reason codes. Lowers Complexity by 1 where it is 3 or more</small></span></label>
           </div>
         </div>
       </div>
@@ -409,7 +439,7 @@ footer p{max-width:90ch}
   <section class="pane" id="p-portfolio" role="tabpanel" aria-labelledby="tab-portfolio" hidden>
     <div class="pf-head">
       <div><h2>The inventory as strata</h2><p class="muted" id="pf-sub"></p></div>
-      <label class="chk" for="f-sample"><span class="sw-row" style="display:contents"><input type="checkbox" id="f-sample" checked style="position:absolute;opacity:0"><span class="toggle" aria-hidden="true"></span></span>Illustrative inventory</label>
+      <label class="chk" for="f-sample"><span class="sw-row" style="display:contents"><input type="checkbox" autocomplete="off" id="f-sample" checked style="position:absolute;opacity:0"><span class="toggle" aria-hidden="true"></span></span>Illustrative inventory</label>
     </div>
     <div id="dash"></div>
 
@@ -441,7 +471,7 @@ footer p{max-width:90ch}
 </main>
 
 <footer>
-  <div class="wrap"><p>Illustrative. The scales, thresholds and review cycles are a proposed methodology built on the MAS Guidelines on Artificial Intelligence Risk Management (7 October 2026) and the MAS Information Paper on AI Model Risk Management (December 2024, cited as IP). They are not MAS requirements and not legal or regulatory advice. Paragraph numbers refer to the Guidelines unless marked IP. Everything you enter stays in your browser.</p></div>
+  <div class="wrap"><p>Illustrative. The scales, thresholds and review cycles are a proposed methodology built on the MAS Guidelines on Artificial Intelligence Risk Management (7 October 2026) and the MAS Information Paper on AI Model Risk Management (December 2024, cited as IP). They are not MAS requirements and not legal or regulatory advice. Paragraph numbers refer to the Guidelines unless marked IP. Everything you enter stays in your browser.</p><p style="margin-top:10px"><b style="font-weight:500;color:var(--ink)">Build 2.</b> Human review is tested against four checks instead of a single switch, and controls lower the tier by one step at most. <b style="font-weight:500;color:var(--ink)">Build 1.</b> Tiering, portfolio dashboard and method.</p></div>
 </footer>
 
 <div class="tierbar" id="tierbar" aria-hidden="true">
@@ -486,7 +516,7 @@ const INFO = {
   fin:"Impact is the potential consequence of a failure, malfunction or poor performance (4.12a). Use the extreme but plausible loss, not the expected one. If the worst case is a loss of SGD 30,000, the use case cannot reach a high tier however complex the model is. The bands assume a mid-sized bank and are meant to be scaled to the institution's capital and risk appetite.",
   nf:"Impact also covers customers and other stakeholders: fairness, ethical conduct, consumer protection and the sensitivity of the data processed (4.12a). The Impact rating is the higher of the financial and the non-financial answer, so a use case with a small loss figure can still rate high if it decides on individual customers.",
   rel:"Reliance is how far the decision or output depends on the AI: the autonomy granted and the degree of human involvement or oversight (4.12c). AI agents with authority to act sit at the top of the scale.",
-  controls:"MAS asks for materiality before controls (inherent) and after them (residual). The residual result must sit within risk appetite before deployment (4.11). Here human review and a tested kill switch lower Reliance, and explainability tooling lowers Complexity. Impact never moves: a control changes whether a failure is caught, not what it would cost. Validation depth follows the inherent tier.",
+  controls:"MAS asks for materiality before controls (inherent) and after them (residual). The residual result must sit within risk appetite before deployment (4.11). Human review only counts if it holds up. Two checks come from MAS's expectations on human oversight: authority and ability to intervene (5.9b), and reviewing oversight decisions and interventions (5.9d). Realistic volume answers its warning on automation bias and decision fatigue (5.9). Timing is this method's own condition: a review after execution is still oversight in MAS's sense (footnote 37), but it does not reduce how much the outcome depends on the AI. Timing and authority decide whether review counts at all, volume and tracking whether it counts in full. Controls lower Reliance or Complexity, never Impact, and together they can lower the tier by one step at most. Validation depth follows the inherent tier.",
   score:"Score = Impact × the average of Complexity and Reliance, from 1 to 25. Impact multiplies, so complexity alone cannot lift a low-impact use case. 15 and above is Tier 1, 8 up to 15 is Tier 2, below 8 is Tier 3. Two rules sit on top: the fat-tail rule and the Impact cap.",
   fattail:"Impact 3 or higher, Complexity 5 and Reliance 4 or higher goes to Tier 1 even below a score of 15. An average smooths out exactly this combination: an opaque model acting with little human check on a material process.",
   cap:"Impact 1 allows at most Tier 3, Impact 2 at most Tier 2. The multiplicative score already produces this. The explicit cap keeps it true if the thresholds are ever recalibrated.",
@@ -576,13 +606,28 @@ function assess(u){
   const C=Math.min(5,tech.c+(u.tp?1:0));
   const g=grade(I,C,u.rel); g.ai=true; return g;
 }
+/* human review counts only if it passes the checks: timing and authority decide whether it counts at all,
+   volume and override tracking decide whether it counts in full */
+const HR_NAMES=["Before it takes effect","Can stop it","Realistic volume","Overrides tracked"];
+function reviewCredit(ctl){
+  if(!ctl.human) return {level:"off",missing:[]};
+  const missing=HR_NAMES.filter((n,i)=>!ctl.hr[i]);
+  if(!(ctl.hr[0]&&ctl.hr[1])) return {level:"none",missing};
+  return {level:(ctl.hr[2]&&ctl.hr[3])?"full":"partial",missing};
+}
+const ORDER=[1,2,3,"BG"];
 function residual(u,ctl){
   const a=assess(u); if(!a.ai) return null;
   let R=a.R,C=a.C;
-  if(ctl.human) R=1;
+  const cr=reviewCredit(ctl);
+  if(cr.level==="full") R=1;
+  else if(cr.level==="partial") R=Math.max(1,R-1);
   if(ctl.kill) R=Math.max(1,R-1);
   if(ctl.explain&&C>=3) C-=1;
-  const g=grade(a.I,C,R); g.ai=true; return g;
+  const g=grade(a.I,C,R); g.ai=true; g.credit=cr; g.uncapped=g.tier; g.capped=false;
+  const ii=ORDER.indexOf(a.tier), ri=ORDER.indexOf(g.tier);
+  if(ri>ii+1){g.tier=ORDER[ii+1];g.capped=true}
+  return g;
 }
 
 /* ---------- storage ---------- */
@@ -638,11 +683,24 @@ const hashMap={assess:"tab-assess",portfolio:"tab-portfolio",method:"tab-method"
 
 /* ---------- assess ---------- */
 let cur=Object.assign({},EXAMPLES[0]), curEx=EXAMPLES[0].id;
-const ctl={human:false,kill:false,explain:false};
+const ctl={human:false,hr:[false,false,false,false],kill:false,explain:false};
 
+/* baseEx: the example last loaded. Once its values are changed, it stays marked as edited and one click restores it */
+let baseEx=curEx;
 function renderExamples(){
-  $("#examples").innerHTML=EXAMPLES.map(x=>'<button type="button" class="preset" data-ex="'+x.id+'" aria-pressed="'+(x.id===curEx)+'"><b>'+esc(x.name)+'</b><span>'+esc(x.shows)+'</span></button>').join("");
+  $("#examples").innerHTML=EXAMPLES.map(x=>{
+    const edited=curEx===null&&x.id===baseEx;
+    return '<button type="button" class="preset'+(edited?" edited":"")+'" data-ex="'+x.id+'" aria-pressed="'+(x.id===curEx)+'"'+(edited?' aria-label="'+esc(x.name)+', edited. Click to restore the example values"':'')+'><b>'+esc(x.name)+'</b><span>'+esc(x.shows)+'</span>'+(edited?'<span class="ed">Edited. Click to reset</span>':'')+'</button>';
+  }).join("");
+  const ex=EXAMPLES.find(z=>z.id===baseEx);
+  $("#ex-note").innerHTML=(curEx===null&&ex)?'<button type="button" class="linkbtn" data-ex="'+ex.id+'">Reset to example values</button>':'Each one shows a rule';
 }
+function loadExample(id){
+  cur=Object.assign({},EXAMPLES.find(z=>z.id===id)); curEx=baseEx=cur.id;
+  ctl.human=ctl.kill=ctl.explain=false; ctl.hr=[false,false,false,false];
+  renderExamples(); renderForm(); renderVerdict();
+}
+$("#ex-note").addEventListener("click",e=>{const b=e.target.closest("[data-ex]"); if(b) loadExample(b.dataset.ex)});
 function scale(id,name,opts,val){
   $(id).innerHTML=opts.map(o=>{const on=o.v===val;return '<label class="'+(on?"on":"")+'" data-v="'+o.v+'"><input type="radio" name="'+name+'" id="'+name+'-'+o.v+'" value="'+o.v+'"'+(on?" checked":"")+'><span class="v">'+o.v+'</span><span class="s">'+esc(o.s)+'</span></label>'}).join("");
 }
@@ -655,6 +713,13 @@ function renderForm(){
   scale("#o-rel","rel",REL,cur.rel); desc("#d-rel",REL,cur.rel);
   $("#f-tp").checked=cur.tp; $("#f-dyn").checked=cur.dyn;
   $("#c-human").checked=ctl.human; $("#c-kill").checked=ctl.kill; $("#c-explain").checked=ctl.explain;
+  ctl.hr.forEach((v,i)=>{$("#h"+i).checked=v});
+  $("#hr-checks").hidden=!ctl.human;
+  const cr=reviewCredit(ctl);
+  $("#hr-verdict").innerHTML=
+    cr.level==="full"?'<b>Counts in full.</b> Reliance drops to 1.':
+    cr.level==="partial"?'<b>Partial credit.</b> Reliance drops by 1. Missing: '+esc(cr.missing.join(", ").toLowerCase())+'.':
+    '<b class="lvl-none">Does not count yet.</b> Without the first two checks, the AI still effectively decides on its own.';
 }
 /* hover preview of scale descriptions */
 [["#o-nf","#d-nf",NF,"nf"],["#o-rel","#d-rel",REL,"rel"]].forEach(([s,d,opts,key])=>{
@@ -669,6 +734,7 @@ document.getElementById("p-assess").addEventListener("change",e=>{
   else if(t.id==="f-tp") cur.tp=t.checked;
   else if(t.id==="f-dyn") cur.dyn=t.checked;
   else if(t.id==="c-human") ctl.human=t.checked;
+  else if(/^h[0-3]$/.test(t.id)) ctl.hr[+t.id[1]]=t.checked;
   else if(t.id==="c-kill") ctl.kill=t.checked;
   else if(t.id==="c-explain") ctl.explain=t.checked;
   else return;
@@ -678,10 +744,7 @@ document.getElementById("p-assess").addEventListener("change",e=>{
 });
 $("#f-name").addEventListener("input",e=>{cur.name=e.target.value});
 $("#examples").addEventListener("click",e=>{
-  const b=e.target.closest("[data-ex]"); if(!b) return;
-  cur=Object.assign({},EXAMPLES.find(z=>z.id===b.dataset.ex)); curEx=cur.id;
-  ctl.human=ctl.kill=ctl.explain=false;
-  renderExamples(); renderForm(); renderVerdict();
+  const b=e.target.closest("[data-ex]"); if(b) loadExample(b.dataset.ex);
 });
 
 function settings(){return Object.assign({},DEF,store.settings||{})}
@@ -715,8 +778,14 @@ function renderVerdict(){
 
   if(a.ai){
     if(ctl.human||ctl.kill||ctl.explain){
-      const r=residual(cur,ctl);
-      h+='<div class="v-sec"><div class="v-sec-h"><h4>After controls</h4></div><div class="resid"><span class="rock hx-'+r.tier+'"></span><p><b style="font-weight:500">'+TIER_NAME[r.tier]+'</b>, score <span class="num">'+r.S.toFixed(1)+'</span>. Validation still follows the inherent tier. The residual tier is what must sit within risk appetite before deployment '+ref("4.11")+'.</p></div></div>';
+      const r=residual(cur,ctl), cr=r.credit, notes=[];
+      if(cr.level==="full") notes.push('Human review counts in full: Reliance to 1.');
+      else if(cr.level==="partial") notes.push('Human review gets partial credit: Reliance down by 1.');
+      else if(cr.level==="none") notes.push('<span class="hit">Human review does not count yet.</span> It needs the first two checks.');
+      if(ctl.kill) notes.push('Kill switch: Reliance down by 1.');
+      if(ctl.explain) notes.push(a.C>=3?'Explainability: Complexity down by 1.':'Explainability: no effect below Complexity 3.');
+      if(r.capped) notes.push('<span class="hit">Capped at one step.</span> On their own, the controls would give '+TIER_NAME[r.uncapped]+'.');
+      h+='<div class="v-sec"><div class="v-sec-h"><h4>After controls</h4>'+iBtn("controls","About controls and the residual tier")+'</div><div class="resid"><span class="rock hx-'+r.tier+'"></span><p><b style="font-weight:500">'+TIER_NAME[r.tier]+'</b>, score <span class="num">'+r.S.toFixed(1)+'</span>. Validation still follows the inherent tier. The residual tier is what must sit within risk appetite before deployment '+ref("4.11")+'.</p></div><ul class="resid-notes">'+notes.map(n=>'<li>'+n+'</li>').join("")+'</ul></div>';
     } else h+='<div class="v-sec"><p class="small muted">Switch on the controls in place (question 6) to see the residual tier.</p></div>';
   }
   h+='<div class="add-row"><button type="button" class="btn btn-solid" id="add">Add to portfolio</button><span id="added" class="small muted" aria-live="polite"></span></div>';
@@ -859,7 +928,7 @@ function renderMethod(){
     ["Identify","Is it AI at all?",'<p>AI means machine-based systems or models that derive outputs through learned premises from the data they receive '+ref("1.3")+'. Rule-based tools, formulae written by people and robotic process automation are out of scope '+ref("fn 6")+'. Generative AI and AI agents are in '+ref("1.5")+'. A designated control function decides borderline cases and is the final arbiter '+ref("4.3")+'. AI embedded in third-party software counts too '+ref("4.2")+'.</p>'],
     ["Rate","Three dimensions, at a minimum",'<p>The materiality assessment has to cover at least Impact, Complexity and Reliance '+ref("4.12")+'. MAS found the same three groupings in practice across the banks it reviewed '+ref("IP 5.3.1")+'.</p><ul><li><b>Impact</b> is the worst plausible consequence for the bank, its customers and other stakeholders, taken as the higher of the financial and non-financial rating.</li><li><b>Complexity</b> reflects the technique, its novelty, explainability and the visibility into third-party models.</li><li><b>Reliance</b> reflects autonomy and the degree of human involvement.</li></ul><p>MAS rates the use case, not the model '+ref("4.10")+'. One model used in two places can carry two ratings.</p>'],
     ["Combine","From three ratings to one tier",'<div class="formula">Score = Impact × (Complexity + Reliance) ÷ 2<span>15 and above: Tier 1 · 8 up to 15: Tier 2 · below 8: Tier 3</span></div><p>Impact multiplies, so a complex model with a small worst case stays low. Three rules sit on top.</p><ul><li><b>Fat tail.</b> Impact 3+, Complexity 5 and Reliance 4+ go to Tier 1 even below 15.</li><li><b>Impact cap.</b> Impact 1 allows at most Tier 3, Impact 2 at most Tier 2.</li><li><b>Basic governance.</b> Impact 1 with a person checking every output '+ref("2.3")+'.</li></ul>'+mt+'<p class="small muted" style="margin-top:10px">The table sets Complexity and Reliance equal. Fat-tail cases sit off this diagonal.</p>'],
-    ["Mitigate","Inherent and residual",'<p>Each use case is rated before controls and after them '+ref("4.11")+'. The residual rating must be within risk appetite before deployment. Here controls can lower Reliance (human review, kill switch) and Complexity (explainability tooling). They never lower Impact. Validation depth follows the inherent tier, because the controls themselves are what validation has to test.</p>'],
+    ["Mitigate","Inherent and residual",'<p>Each use case is rated before controls and after them '+ref("4.11")+'. The residual rating must be within risk appetite before deployment. Here controls can lower Reliance (human review, kill switch) and Complexity (explainability tooling). They never lower Impact, and together they lower the tier by one step at most. Validation depth follows the inherent tier, because the controls themselves are what validation has to test.</p><p>Human review is tested, not assumed. It counts only if the review happens before the output takes effect and the reviewer can stop it. It counts in full only if the volume leaves time for each case and overrides are tracked '+ref("5.9")+'. A reviewer who never says no is a finding, not a control.</p>'],
     ["Validate","What each tier triggers",'<ul><li><b>Tier 1.</b> Independent validation before deployment '+ref("5.19")+', regular independent re-validation '+ref("5.24")+', continuous monitoring '+ref("5.23")+' and tested contingency plans '+ref("5.3")+'.</li><li><b>Tier 2 and Tier 3.</b> Documented review by someone outside development, such as peer review '+ref("5.20")+', with proportionate monitoring.</li><li><b>Basic governance.</b> Accountability, usage rules, an approved tool list, training and compliance checks '+ref("2.5")+'.</li></ul><p>MAS sets no review frequency. The default cycles here, 12, 12 and 24 months, are a policy choice and can be changed on the Portfolio tab. Self-updating models get tighter monitoring '+ref("5.25c")+' without a higher tier.</p>'],
     ["Plan","Timeline",'<ul><li><b>7 October 2026.</b> Guidelines published.</li><li><b>7 October 2027.</b> Oversight, identification, inventory and materiality assessment expected (Sections 3 and 4).</li><li><b>7 October 2028.</b> Lifecycle controls and capability expected (Sections 5 and 6) '+ref("1.8")+'.</li></ul><p>Proportionality applies throughout '+ref("1.6, 2.1")+'. Identification, inventory and tiering come first, and that is the step this page covers.</p>']
   ];
@@ -868,6 +937,9 @@ function renderMethod(){
 
 /* ---------- boot ---------- */
 renderExamples(); renderForm(); renderVerdict(); renderMethod();
+/* browsers can restore old form values on reload or back navigation; redraw the form from the page's own state */
+addEventListener("pageshow",()=>{renderExamples(); renderForm(); renderVerdict()});
+document.querySelectorAll("#p-assess input, #p-portfolio input").forEach(i=>i.setAttribute("autocomplete","off"));
 const h0=hashMap[location.hash.slice(1)]; showTab(h0||"tab-assess");
 addEventListener("resize",syncBar);
 })();
