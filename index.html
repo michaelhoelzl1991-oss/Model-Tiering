@@ -258,8 +258,9 @@ section.pane{padding-bottom:88px}
 .layer .txt{padding:10px 14px;display:flex;flex-direction:column;justify-content:center}
 .layer .txt b{font-family:var(--serif);font-weight:400;font-size:24px;line-height:1.1}
 .layer .txt span{font-size:13.5px;color:var(--muted)}
-.layer .exp{padding:10px 14px;font-size:13px;color:var(--muted);text-align:right;display:flex;align-items:center;justify-content:flex-end}
-.layer .exp.out{color:var(--copper);font-weight:500}
+.layer .exp{padding:10px 14px;font-size:13px;color:var(--muted);text-align:right;display:flex;flex-direction:column;align-items:flex-end;justify-content:center;gap:2px}
+.layer .exp b{font-weight:500;color:var(--ink)}
+.layer .exp.out b{color:var(--copper)}
 
 /* coverage */
 .cov{display:flex;flex-direction:column;gap:18px}
@@ -274,16 +275,55 @@ section.pane{padding-bottom:88px}
 
 /* map */
 .mapwrap{overflow-x:auto}
-.map{display:grid;grid-template-columns:70px repeat(5,minmax(48px,1fr));gap:0;min-width:340px;border-top:1px solid var(--rule);border-left:1px solid var(--rule)}
-.map .ax{font-size:12.5px;color:var(--muted);display:flex;align-items:center;padding:0 8px;border-right:1px solid var(--rule);border-bottom:1px solid var(--rule)}
-.map .axc{justify-content:center}
-.map .corner{border-right:1px solid var(--rule);border-bottom:1px solid var(--rule)}
-.cell{min-height:56px;padding:6px;display:flex;flex-wrap:wrap;gap:4px;align-content:flex-start;border-right:1px solid var(--rule);border-bottom:1px solid var(--rule)}
-.cell.cap{background-image:repeating-linear-gradient(45deg,color-mix(in srgb,var(--silver) 45%,transparent) 0 1px,transparent 1px 8px)}
-.dot{display:inline-block;border-radius:50%}
-.d-1{background:var(--t1)} .d-2{background:var(--t2)} .d-3{background:var(--t3)} .d-BG{background:var(--tbg)}
-.dot.mine{box-shadow:0 0 0 2px var(--surface),0 0 0 3px var(--ink)}
-
+.map{display:grid;grid-template-columns:78px repeat(5,minmax(54px,1fr));gap:4px;min-width:360px}
+.map .ax{font-size:13px;color:var(--muted);display:flex;flex-direction:column;justify-content:center;padding:0 6px}
+.map .ax b{font-family:var(--serif);font-weight:400;font-size:20px;color:var(--ink);line-height:1}
+.map .ax small{font-size:11.5px;color:var(--muted);margin-top:2px}
+.map .axc{align-items:center;text-align:center}
+.map .axc.axtop{font-family:var(--serif);font-size:18px;color:var(--ink);padding-bottom:2px}
+.map .axc.axbot{font-size:12px;letter-spacing:.08em;text-transform:uppercase;padding-top:4px}
+.map .corner{display:flex;align-items:flex-end;font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);padding:0 6px 4px}
+.mcell{appearance:none;font:inherit;color:var(--ink);min-height:58px;padding:6px;display:flex;flex-wrap:wrap;gap:5px;align-content:center;justify-content:center;border:1px solid var(--rule);background:var(--surface);cursor:pointer}
+.mcell.empty{background:transparent;border-style:dashed;border-color:color-mix(in srgb,var(--rule) 70%,transparent);cursor:default}
+.mcell.cap:not(.empty){background:color-mix(in srgb,var(--surface) 55%,var(--bg))}
+.mcell:hover:not(.empty){border-color:var(--muted)}
+.mcell.sel{outline:2px solid var(--ink);outline-offset:-1px}
+.mchip{display:inline-flex;align-items:center;gap:5px;font-size:15px;font-variant-numeric:tabular-nums;font-weight:500}
+.mchip .sw{width:16px;height:16px}
+.mchip .sw.hx-BG{background-size:6px 6px}
+.clist{list-style:none;margin:0;padding:0;border-top:1px solid var(--ink)}
+.clist li{display:grid;grid-template-columns:16px minmax(0,1fr);gap:12px;align-items:start;padding:11px 0;border-bottom:1px solid var(--rule)}
+.clist .sw{margin-top:4px}
+.cl-n small{display:block;font-size:13px;color:var(--muted);margin-top:2px}
+.linkbtn.op{text-decoration:none;text-align:left;font-weight:500;font-size:inherit;border-bottom:1px solid var(--rule)}
+.linkbtn.op:hover{border-bottom-color:var(--ink)}
+.linkbtn.sm{font-size:13px;font-weight:500;color:var(--muted)}
+.linkbtn.sm:hover{color:var(--ink)}
+details.dist{margin-top:20px;border:1px solid var(--rule);background:var(--surface)}
+details.dist summary{cursor:pointer;list-style:none;padding:16px 22px;font-family:var(--serif);font-size:20px;display:flex;gap:12px;align-items:baseline;flex-wrap:wrap}
+details.dist summary::-webkit-details-marker{display:none}
+details.dist summary::after{content:"+";margin-left:auto;font-family:var(--sans);color:var(--muted)}
+details.dist[open] summary::after{content:"\2212"}
+.dist-b{padding:0 22px 20px;max-width:640px}
+/* needs attention */
+.att{margin-top:28px;border:1px solid var(--rule);background:var(--surface)}
+.att-h{display:flex;justify-content:space-between;align-items:baseline;gap:12px;flex-wrap:wrap;padding:18px 22px 10px}
+.att-h h3{font-size:22px}
+.att-r{appearance:none;font:inherit;color:var(--ink);background:transparent;border:0;border-top:1px solid var(--rule);width:100%;display:grid;grid-template-columns:56px minmax(0,1fr) auto;gap:14px;align-items:center;padding:12px 22px;text-align:left;cursor:pointer}
+button.att-r:hover{background:var(--bg)}
+.att-r.on{background:var(--bg);box-shadow:inset 3px 0 0 var(--copper)}
+.att-n{font-family:var(--serif);font-size:30px;line-height:1;color:var(--copper)}
+.att-t{font-size:15px}
+.att-go{font-size:13px;font-weight:500;color:var(--muted)}
+button.att-r .att-go::after{content:" \2192"}
+.att-r.ok{cursor:default}
+.att-r.ok .att-n{color:var(--muted)}
+.att-r.ok .att-t{color:var(--muted)}
+.fchip{display:flex;gap:10px;align-items:baseline;flex-wrap:wrap;font-size:14px;color:var(--muted);margin:-4px 0 12px}
+.fchip b{color:var(--ink);font-weight:500}
+.sortb{appearance:none;background:none;border:0;padding:0;font:inherit;letter-spacing:inherit;text-transform:inherit;color:inherit;cursor:pointer;white-space:nowrap}
+.sortb:hover{color:var(--ink)}
+th.n .sortb{text-align:right}
 /* histogram */
 svg.hist text{fill:var(--muted);font-family:var(--sans);font-size:11.5px}
 svg.hist .gl{stroke:var(--rule);stroke-width:1}
@@ -302,6 +342,7 @@ table{border-collapse:collapse;width:100%;min-width:820px;font-size:14.5px}
 th{font:500 12px var(--sans);letter-spacing:.06em;text-transform:uppercase;color:var(--muted);text-align:left;padding:12px 10px;border-bottom:1px solid var(--rule);white-space:nowrap}
 td{padding:11px 10px;border-bottom:1px solid var(--rule);vertical-align:middle}
 td.n,th.n{text-align:right;font-variant-numeric:tabular-nums}
+td.num{white-space:nowrap}
 .tierc{display:inline-flex;gap:8px;align-items:center;white-space:nowrap}
 .st{white-space:nowrap;font-size:14px}
 .st.over{color:var(--copper)}
@@ -544,7 +585,7 @@ const INFO = {
   coverage:"Share of use cases in each tier with a review inside the current cycle. For high-risk use cases MAS expects formal independent validation before deployment (5.19) and regular independent re-validation (5.24), so anything below 100% in Tier 1 is a finding rather than a planning gap.",
   cycles:"MAS does not prescribe review frequencies. Frequency and rigour of monitoring and re-validation should follow risk materiality (5.23, 5.24), and re-validation is also triggered by monitoring breaches, significant changes or new external risks (5.24). The cycles here are a policy choice.",
   distribution:"The split across tiers is a calibration check, not a quota. If too many use cases land in Tier 1, validation capacity spreads thin and the impact bands are probably set too low. If almost none do, the scale is probably too lenient.",
-  map:"Each dot is one use case, placed by Impact (rows) and Complexity (columns). Dot size shows Reliance, colour shows the final tier. Hatched rows are capped by Impact: nothing there can reach Tier 1, whatever the complexity.",
+  map:"Each cell counts the use cases with that Impact (rows) and Complexity (columns), split by tier. Click a cell to list its use cases on the right, and click a name to open it in Assess. Rows at Impact 1 and 2 are capped: nothing there can reach Tier 1, whatever the complexity. Reliance, the third dimension, shows in the list and in the inventory.",
   agent:"For agents, MAS expects the inventory to record agent-specific attributes: an identifier, the tools and systems the agent can access, its components and the guardrails imposed (4.7, footnote 25). Testing has to cover key failure modes and whether the guardrails hold (5.15). Monitoring covers the actions taken and tools used, with kill switches for high risk materiality AI (5.23). Guardrails count only where they sit outside the model, such as limits on data access, tool calls and network egress: an instruction in the prompt can be talked around. This method adds two rules of its own. An agent that can move money without a hard limit gets Impact 4 or higher, because without a limit there is no plausible worst case to estimate below that. And a kill switch earns no credit where actions cannot be undone: it stops the next action, not the last one.",
   hist:"Scores across the inventory, with the Tier 2 and Tier 1 thresholds marked. Bars carry the final tier, so a use case pulled up by the fat-tail rule shows as Tier 1 inside the Tier 2 range. That right-hand tail is where independent validation capacity goes."
 };
@@ -885,15 +926,42 @@ $("#tb-go").addEventListener("click",()=>document.getElementById("verdict").scro
 });
 const sb=$("#f-sample"); sb.checked=store.showSample!==false;
 sb.addEventListener("change",()=>{store.showSample=sb.checked;save();renderDash()});
-let filter="all";
+let filter="all", sortKey="default", sortDir=1, cellSel=null;
+const FILTER_LABEL={"att-t1":"Tier 1 without validation in cycle","att-agent":"Agents with open points","att-review":"Tier 2 and 3 reviews overdue or never done"};
 
 function items(){
   return (store.showSample!==false?SAMPLE:[]).concat(store.user).map(u=>{
     const a=assess(u), lastM=store.reviewed[u.id]!==undefined?store.reviewed[u.id]:u.lastM, cy=cycleFor(a.tier);
     let status="na",due=null;
     if(cy){ if(lastM===null||lastM===undefined) status="never"; else {due=lastM+cy;status=NOW_M<=due?"in":"over"} }
-    return Object.assign({},u,{a,lastM,status,due});
+    const open=isAgent(u)?agentPoints(u).filter(p=>p.open).length:0;
+    return Object.assign({},u,{a,lastM,status,due,open});
   });
+}
+const ATT={
+  "att-t1":x=>x.a.tier===1&&x.status!=="in",
+  "att-agent":x=>isAgent(x)&&x.open>0,
+  "att-review":x=>(x.a.tier===2||x.a.tier===3)&&(x.status==="over"||x.status==="never")
+};
+function passFilter(x){
+  if(filter==="all") return true;
+  if(ATT[filter]) return ATT[filter](x);
+  if(filter.startsWith("cell-")){const [I,C]=filter.slice(5).split("-").map(Number);return x.a.ai&&x.a.I===I&&x.a.C===C}
+  return String(x.a.tier)===filter;
+}
+const TORD={1:0,2:1,3:2,BG:3,OOS:4}, SORD={never:0,over:1,in:2,na:3};
+function sortRows(rows){
+  const k=sortKey, d=sortDir;
+  const val={name:x=>x.name.toLowerCase(),area:x=>x.area.toLowerCase(),I:x=>x.a.I,C:x=>x.a.ai?x.a.C:-1,R:x=>x.a.ai?x.a.R:-1,S:x=>x.a.S??-1,tier:x=>TORD[x.a.tier],review:x=>SORD[x.status],due:x=>x.due??(x.status==="never"?-1:1e9)}[k];
+  if(!val) return rows.sort((x,y)=>TORD[x.a.tier]-TORD[y.a.tier]||(y.a.S||0)-(x.a.S||0));
+  return rows.sort((x,y)=>{const a=val(x),b=val(y);return (a<b?-1:a>b?1:0)*d||TORD[x.a.tier]-TORD[y.a.tier]});
+}
+function openInAssess(id){
+  const x=items().find(z=>z.id===id); if(!x) return;
+  cur={name:x.name,tech:x.tech,tp:!!x.tp,dyn:!!x.dyn,fin:x.fin,nf:x.nf,rel:x.rel}; if(x.agent) cur.agent=Object.assign({},x.agent);
+  curEx=null; baseEx=null; ctl.human=ctl.kill=ctl.explain=false; ctl.hr=[false,false,false,false];
+  renderExamples(); renderForm(); renderVerdict(); showTab("tab-assess");
+  const el=document.querySelector(".assess"); if(el) window.scrollTo({top:el.getBoundingClientRect().top+scrollY-80,behavior:reduce?"auto":"smooth"});
 }
 
 function renderDash(){
@@ -911,48 +979,75 @@ function renderDash(){
   h+='<div class="kpi"><span class="v">'+(over+never)+'</span><span class="l">reviews overdue ('+over+') or never done ('+never+')</span></div>';
   h+='</div>';
 
+  /* needs attention */
+  const att=[["att-t1","Tier 1 use case"+"s"," without independent validation in cycle","5.19"],["att-agent","Agent"+"s"," with open points","4.7, 5.15, 5.23"],["att-review","Tier 2 and 3 review"+"s"," overdue or never done","5.20"]];
+  h+='<div class="att"><div class="att-h"><h3>Needs attention</h3><span class="small muted">Click a line to filter the inventory</span></div>';
+  att.forEach(([k,noun,rest,r])=>{
+    const c=all.filter(ATT[k]).length, nm=c===1?noun.slice(0,-1):noun;
+    h+=c?'<button type="button" class="att-r'+(filter===k?" on":"")+'" data-f="'+k+'"><span class="att-n">'+c+'</span><span class="att-t">'+nm+rest+' '+ref(r)+'</span><span class="att-go">Show</span></button>'
+        :'<div class="att-r ok"><span class="att-n">0</span><span class="att-t">'+nm+rest+'</span><span class="att-go">None</span></div>';
+  });
+  h+='</div>';
+
   /* strata column + coverage */
   const layers=[[1,s.b1lo,s.b1hi],[2,s.b2lo,s.b2hi],[3,null,null],["BG",null,null]];
   h+='<div class="row2"><div class="blk"><div class="blk-h"><h3>Where the use cases sit</h3>'+iBtn("distribution","About the split across tiers")+'</div><div class="column">';
   layers.forEach(([t,lo,hi])=>{
     const p=share(t), c=cnt(t), minH=Math.round(46+p*2.4);
-    let exp="";
-    if(lo!==null){const inBand=p>=lo&&p<=hi;exp='<span class="exp'+(inBand?"":" out")+'">'+(inBand?"within ":"outside ")+lo+" to "+hi+"%</span>"} else exp='<span class="exp"></span>';
+    let exp='<span class="exp"></span>';
+    if(lo!==null){const st=p<lo?"below":p>hi?"above":"within";exp='<span class="exp'+(st==="within"?"":" out")+'"><span>Expected '+lo+' to '+hi+'%</span><b>'+(st==="within"?"Within range":st==="above"?"Above range":"Below range")+'</b></span>'}
     h+='<div class="layer" style="min-height:'+minH+'px"><span class="rock hx-'+t+'"></span><span class="txt"><b class="num">'+c+' · '+p.toFixed(0)+'%</b><span>'+TIER_NAME[t]+' · '+TIER_DESC[t].toLowerCase()+'</span></span>'+exp+'</div>';
   });
   h+='</div></div>';
-
   h+='<div class="blk"><div class="blk-h"><h3>Validated within cycle</h3>'+iBtn("coverage","About validation coverage")+'</div><div class="cov">';
   [1,2,3].forEach(t=>{const c=cov(t),g=cnt(t);h+='<div class="cov-r"><span>'+TIER_NAME[t]+'</span><span class="cov-t"><span class="cov-f hx-'+t+'" style="width:'+(c||0)+'%"></span>'+(t===1?'<span class="cov-m"></span>':'')+'</span><span class="cov-v">'+(c===null?"n/a":c.toFixed(0)+"%")+' <span class="muted">of '+g+'</span></span></div>'});
   h+='<div class="cov-r"><span>Basic gov.</span><span class="small muted" style="grid-column:span 2">No validation. Governance checks under '+ref("2.5")+'</span></div>';
   h+='</div><div class="legend"><span class="lg"><span class="lg-m"></span>Tier 1 expectation: independent validation before deployment</span><span>Cycles: '+s.cy1+', '+s.cy2+' and '+s.cy3+' months</span></div></div></div>';
 
-  /* map + histogram */
-  h+='<div class="row2"><div class="blk"><div class="blk-h"><h3>Impact × Complexity</h3>'+iBtn("map","How to read the map")+'</div><div class="mapwrap"><div class="map">';
+  /* map + cell detail */
+  if(cellSel&&!scope.some(x=>x.a.I===cellSel[0]&&x.a.C===cellSel[1])) cellSel=null;
+  if(!cellSel){let best=null;for(let I=5;I>=1&&!best;I--)for(let C=5;C>=1;C--){if(scope.some(x=>x.a.I===I&&x.a.C===C)){best=[I,C];break}} cellSel=best}
+  h+='<div class="row2"><div class="blk"><div class="blk-h"><h3>Impact × Complexity</h3>'+iBtn("map","How to read the map")+'</div><div class="mapwrap"><div class="map" role="grid" aria-label="Use cases by Impact and Complexity">';
+  h+='<div class="corner"><span>Impact</span></div>';for(let C=1;C<=5;C++)h+='<div class="ax axc axtop">'+C+'</div>';
   for(let I=5;I>=1;I--){
-    h+='<div class="ax">Impact '+I+'</div>';
+    h+='<div class="ax'+(I<=2?" capl":"")+'"><b>'+I+'</b>'+(I<=2?'<small>max Tier '+(I===1?3:2)+'</small>':'')+'</div>';
     for(let C=1;C<=5;C++){
-      const here=scope.filter(x=>x.a.I===I&&x.a.C===C);
-      h+='<div class="cell'+(I<=2?" cap":"")+'">'+here.map(x=>{const z=6+x.a.R*2;return '<span class="dot d-'+x.a.tier+(x.src==="user"?" mine":"")+'" style="width:'+z+'px;height:'+z+'px" title="'+esc(x.name)+' · '+TIER_NAME[x.a.tier]+' · Reliance '+x.a.R+'"></span>'}).join("")+'</div>';
+      const here=scope.filter(x=>x.a.I===I&&x.a.C===C), sel=cellSel&&cellSel[0]===I&&cellSel[1]===C;
+      if(!here.length){h+='<div class="mcell empty'+(I<=2?" cap":"")+'"></div>';continue}
+      const by=[1,2,3,"BG"].map(t=>[t,here.filter(x=>x.a.tier===t).length]).filter(z=>z[1]);
+      h+='<button type="button" class="mcell'+(I<=2?" cap":"")+(sel?" sel":"")+'" data-cell="'+I+'-'+C+'" aria-pressed="'+!!sel+'" aria-label="Impact '+I+', Complexity '+C+': '+here.length+' use cases">'+by.map(([t,c])=>'<span class="mchip"><i class="sw hx-'+t+'"></i>'+c+'</span>').join("")+'</button>';
     }
   }
-  h+='<div class="corner"></div>';for(let C=1;C<=5;C++)h+='<div class="ax axc">C '+C+'</div>';
-  h+='</div></div><div class="legend">'+[1,2,3,"BG"].map(t=>'<span class="lg"><span class="dot d-'+t+'" style="width:10px;height:10px"></span>'+TIER_NAME[t]+'</span>').join("")+'<span>Larger dot, higher Reliance</span>'+(store.user.length?'<span>Ringed: yours</span>':'')+'</div></div>';
-  h+='<div class="blk"><div class="blk-h"><h3>The tail</h3>'+iBtn("hist","How to read the distribution")+'</div>'+hist(scope)+'</div></div>';
+  h+='<div class="corner"></div><div class="ax axc axbot" style="grid-column:2/7">Complexity</div>';
+  h+='</div></div><div class="legend">'+[1,2,3,"BG"].map(t=>'<span class="lg"><span class="sw hx-'+t+'"></span>'+TIER_NAME[t]+'</span>').join("")+'<span>Number = use cases in that cell</span></div></div>';
+  /* cell detail */
+  h+='<div class="blk">';
+  if(cellSel){
+    const [I,C]=cellSel, here=sortRows(scope.filter(x=>x.a.I===I&&x.a.C===C));
+    h+='<div class="blk-h"><h3>Impact '+I+' · Complexity '+C+'</h3><button type="button" class="linkbtn" data-f="cell-'+I+'-'+C+'">Show in inventory</button></div><ul class="clist">';
+    here.forEach(x=>{h+='<li><span class="sw hx-'+x.a.tier+'"></span><span class="cl-n"><button type="button" class="linkbtn op" data-open="'+x.id+'">'+esc(x.name)+'</button><small>'+TIER_NAME[x.a.tier]+' · Reliance '+x.a.R+' · score '+x.a.S.toFixed(1)+'</small></span></li>'});
+    h+='</ul><p class="small muted" style="margin-top:12px">Click a use case to open it in Assess and see why it sits here.</p>';
+  } else h+='<p class="muted">Click a cell to see its use cases.</p>';
+  h+='</div></div>';
+  h+='<details class="dist"><summary>Score distribution <span class="small muted">where independent validation capacity goes</span></summary><div class="dist-b">'+hist(scope)+'</div></details>';
 
   /* inventory */
-  const order={1:0,2:1,3:2,BG:3,OOS:4};
-  let rows=all.slice().sort((x,y)=>order[x.a.tier]-order[y.a.tier]||(y.a.S||0)-(x.a.S||0));
-  if(filter!=="all") rows=rows.filter(x=>String(x.a.tier)===filter);
-  h+='<div class="inv"><div class="inv-h"><h3>Inventory</h3><div class="filters" role="group" aria-label="Filter by tier">'+[["all","All"],["1","Tier 1"],["2","Tier 2"],["3","Tier 3"],["BG","Basic gov."],["OOS","Out of scope"]].map(([k,l])=>'<button type="button" class="fbtn" data-f="'+k+'" aria-pressed="'+(filter===k)+'">'+l+'</button>').join("")+'</div></div>';
-  h+='<div class="tablewrap"><table><thead><tr><th>Use case</th><th>Area</th><th class="n">I</th><th class="n">C</th><th class="n">R</th><th class="n">Score</th><th>Tier</th><th>Review</th><th>Next due</th><th></th></tr></thead><tbody>';
+  let rows=sortRows(all.filter(passFilter));
+  const special=filter.startsWith("att-")||filter.startsWith("cell-");
+  const spLabel=FILTER_LABEL[filter]||(filter.startsWith("cell-")?"Impact "+filter.split("-")[1]+" · Complexity "+filter.split("-")[2]:"");
+  h+='<div class="inv" id="inv"><div class="inv-h"><h3>Inventory</h3><div class="filters" role="group" aria-label="Filter by tier">'+[["all","All"],["1","Tier 1"],["2","Tier 2"],["3","Tier 3"],["BG","Basic gov."],["OOS","Out of scope"]].map(([k,l])=>'<button type="button" class="fbtn" data-f="'+k+'" aria-pressed="'+(filter===k)+'">'+l+'</button>').join("")+'</div></div>';
+  if(special) h+='<div class="fchip">Showing: <b>'+esc(spLabel)+'</b> · '+rows.length+' <button type="button" class="linkbtn" data-f="all">Show all</button></div>';
+  const cols=[["name","Use case",""],["area","Area",""],["I","Impact","n"],["C","Complexity","n"],["R","Reliance","n"],["S","Score","n"],["tier","Tier",""],["review","Review",""],["due","Next due",""]];
+  h+='<div class="tablewrap"><table><thead><tr>'+cols.map(([k,l,c])=>'<th class="'+c+'" aria-sort="'+(sortKey===k?(sortDir>0?"ascending":"descending"):"none")+'"><button type="button" class="sortb" data-sort="'+k+'">'+l+(sortKey===k?(sortDir>0?' ↑':' ↓'):'')+'</button></th>').join("")+'<th></th></tr></thead><tbody>';
   rows.forEach(x=>{
     const a=x.a, stT={in:"In cycle",over:"Overdue",never:a.tier===1?"No validation on record":"Never reviewed",na:"Not applicable"}[x.status];
-    h+='<tr><td>'+esc(x.name)+(x.src==="user"?'<span class="tag">yours</span>':'')+(a.fat?'<span class="tag fat">fat tail</span>':'')+(x.dyn?'<span class="tag">self-updating</span>':'')+(isAgent(x)?(()=>{const n=agentPoints(x).filter(p=>p.open).length;return '<span class="tag'+(n?" fat":"")+'">agent'+(n?' · '+n+' open':'')+'</span>'})():'')+'</td><td class="muted">'+esc(x.area)+'</td><td class="n">'+a.I+'</td><td class="n">'+(a.ai?a.C:"")+'</td><td class="n">'+(a.ai?a.R:"")+'</td><td class="n">'+(a.S===null?"":a.S.toFixed(1))+'</td><td><span class="tierc"><span class="sw hx-'+a.tier+'"></span>'+TIER_NAME[a.tier]+'</span></td><td><span class="st '+x.status+'">'+stT+'</span></td><td class="num">'+(x.due!==null?mLabel(x.due):(x.status==="never"?"Now":""))+'</td><td style="white-space:nowrap;text-align:right">'+(x.status!=="na"&&x.status!=="in"?'<button type="button" class="btn btn-sm" data-rev="'+x.id+'">Mark reviewed</button> ':'')+(x.src==="user"?'<button type="button" class="btn btn-sm" data-del="'+x.id+'">Remove</button>':'')+'</td></tr>';
+    h+='<tr><td><button type="button" class="linkbtn op" data-open="'+x.id+'">'+esc(x.name)+'</button>'+(x.src==="user"?'<span class="tag">yours</span>':'')+(a.fat?'<span class="tag fat">fat tail</span>':'')+(x.dyn?'<span class="tag">self-updating</span>':'')+(isAgent(x)?'<span class="tag'+(x.open?" fat":"")+'">agent'+(x.open?' · '+x.open+' open':'')+'</span>':'')+'</td><td class="muted">'+esc(x.area)+'</td><td class="n">'+a.I+'</td><td class="n">'+(a.ai?a.C:"")+'</td><td class="n">'+(a.ai?a.R:"")+'</td><td class="n">'+(a.S===null?"":a.S.toFixed(1))+'</td><td><span class="tierc"><span class="sw hx-'+a.tier+'"></span>'+TIER_NAME[a.tier]+'</span></td><td><span class="st '+x.status+'">'+stT+'</span></td><td class="num">'+(x.due!==null?mLabel(x.due):(x.status==="never"?"Now":""))+'</td><td style="white-space:nowrap;text-align:right">'+((x.status==="over"||x.status==="never")?'<button type="button" class="linkbtn sm" data-rev="'+x.id+'">Record review</button>':'')+(x.src==="user"?' <button type="button" class="linkbtn sm" data-del="'+x.id+'">Remove</button>':'')+'</td></tr>';
   });
-  if(!rows.length) h+='<tr><td colspan="10" class="empty">No use cases in this tier.</td></tr>';
-  h+='</tbody></table></div><p class="small muted" style="margin-top:12px">Mark reviewed records a review this month, in your browser only. '+(Object.keys(store.reviewed).length?'<button type="button" class="btn btn-sm" id="resetRev">Reset review marks</button>':'')+'</p></div>';
+  if(!rows.length) h+='<tr><td colspan="10" class="empty">No use cases match this filter.</td></tr>';
+  h+='</tbody></table></div><p class="small muted" style="margin-top:12px">Click a name to open it in Assess. Record review marks a review as done this month, in your browser only. '+(Object.keys(store.reviewed).length?'<button type="button" class="btn btn-sm" id="resetRev">Reset review marks</button>':'')+'</p></div>';
+  const open=document.querySelector("details.dist")&&document.querySelector("details.dist").open;
   $("#dash").innerHTML=h;
+  if(open) document.querySelector("details.dist").open=true;
 }
 
 function hist(scope){
@@ -978,7 +1073,10 @@ function hist(scope){
 }
 
 $("#dash").addEventListener("click",e=>{
-  const f=e.target.closest("[data-f]");if(f){filter=f.dataset.f;renderDash();return}
+  const o=e.target.closest("[data-open]");if(o){openInAssess(o.dataset.open);return}
+  const c=e.target.closest("[data-cell]");if(c){cellSel=c.dataset.cell.split("-").map(Number);renderDash();return}
+  const sb=e.target.closest("[data-sort]");if(sb){const k=sb.dataset.sort;if(sortKey===k)sortDir=-sortDir;else{sortKey=k;sortDir=(k==="name"||k==="area"||k==="tier"||k==="review"||k==="due")?1:-1}renderDash();return}
+  const f=e.target.closest("[data-f]");if(f){const k=f.dataset.f;filter=(filter===k&&k!=="all")?"all":k;renderDash();if(k!=="all"&&!f.classList.contains("fbtn")){const inv=document.getElementById("inv");if(inv)window.scrollTo({top:inv.getBoundingClientRect().top+scrollY-80,behavior:reduce?"auto":"smooth"})}return}
   const r=e.target.closest("[data-rev]");if(r){store.reviewed[r.dataset.rev]=NOW_M;save();renderDash();return}
   const d=e.target.closest("[data-del]");if(d){store.user=store.user.filter(x=>x.id!==d.dataset.del);delete store.reviewed[d.dataset.del];save();renderDash();return}
   if(e.target.id==="resetRev"){store.reviewed={};save();renderDash()}
